@@ -42,7 +42,7 @@ export function Navbar() {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent-blue via-accent-purple to-accent-pink shadow-lg transition-transform duration-300 group-hover:scale-110">
             <Boxes size={18} className="text-white" aria-hidden="true" />
           </span>
-          <span className="gradient-text">Rubik</span>
+          <span className="gradient-text">Share India Institutional Desk</span>
         </a>
 
         <ul className="hidden items-center gap-8 md:flex">

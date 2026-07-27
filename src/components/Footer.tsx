@@ -33,7 +33,7 @@ export function Footer() {
                 className="gradient-text text-lg font-semibold"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Rubik
+                Share India Institutional Desk
               </span>
             </div>
             <p className="mt-4 max-w-xs text-sm text-white/55">
@@ -71,7 +71,7 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs text-white/40 sm:flex-row">
-          <p>© {new Date().getFullYear()} Rubik Broking Pvt. Ltd. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Share India Institutional Desk. All rights reserved.</p>
           <p>Investments in securities are subject to market risk.</p>
         </div>
       </div>

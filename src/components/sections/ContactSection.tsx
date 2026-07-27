@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Mail, MapPin, Phone, Send } from "lucide-react";
 
 const CONTACT_INFO = [
-  { icon: Mail, label: "support@rubik.trade" },
+  { icon: Mail, label: "support@shareindia.com" },
   { icon: Phone, label: "+91 1800 123 4567" },
   { icon: MapPin, label: "BKC, Mumbai, India" },
 ];

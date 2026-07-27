@@ -8,11 +8,13 @@ import { STICKER_OFFSET, gridIndexToColRow, type FaceDefinition } from "@/lib/cu
 
 interface CubeFaceProps {
   face: FaceDefinition;
-  /** Solid sticker color for non-interactive faces. */
+  /** Solid sticker color for every tile on this face. */
   baseColor: string;
   /** Only the front face is interactive and carries feature tiles. */
   interactive?: boolean;
   wasDraggingRef?: React.RefObject<boolean>;
+  /** The cube's non-interactive geometry, raycast against to hide tiles rotated out of view. */
+  occluderRef?: React.RefObject<THREE.Object3D>;
   onSelectFeature?: (feature: Feature) => void;
   onHoverChange?: (id: string | null) => void;
 }
@@ -23,6 +25,7 @@ export function CubeFace({
   baseColor,
   interactive,
   wasDraggingRef,
+  occluderRef,
   onSelectFeature,
   onHoverChange,
 }: CubeFaceProps) {
@@ -40,9 +43,10 @@ export function CubeFace({
             key={`${face.axis}${face.sign}-${gridIndex}`}
             position={[local.x, local.y, local.z]}
             rotation={face.rotation}
-            color={feature?.color ?? baseColor}
+            color={baseColor}
             feature={feature}
             wasDraggingRef={wasDraggingRef}
+            occluderRef={occluderRef}
             onSelect={onSelectFeature}
             onHoverChange={onHoverChange}
           />

@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { ContactShadows, Environment, RoundedBox } from "@react-three/drei";
+import { ContactShadows, Environment } from "@react-three/drei";
 import * as THREE from "three";
+import { RoundedBoxGeometry } from "three-stdlib";
 import { useCubeRotation } from "@/hooks/useCubeRotation";
 import { CubeFace } from "./CubeFace";
-import { AXIS_POSITIONS, CUBIE_SIZE, FACE_DEFINITIONS } from "@/lib/cubeLayout";
+import {
+  AXIS_POSITIONS,
+  CUBIE_SIZE,
+  FACE_DEFINITIONS,
+  STICKER_OFFSET,
+  STICKER_SIZE,
+  gridIndexToColRow,
+  type FaceDefinition,
+} from "@/lib/cubeLayout";
 import type { Feature } from "@/data/features";
 
 const FACE_BASE_COLORS: Record<string, string> = {
@@ -16,6 +25,94 @@ const FACE_BASE_COLORS: Record<string, string> = {
   y1: "#f5f7ff", // top
   "y-1": "#22d3ee", // bottom
 };
+
+const FRONT_FACE = FACE_DEFINITIONS.find((f) => f.axis === "z" && f.sign === 1)!;
+const DECORATIVE_FACES = FACE_DEFINITIONS.filter((f) => !(f.axis === "z" && f.sign === 1));
+
+/**
+ * The 27 body cubies are identical in shape and material, so they're drawn as
+ * a single InstancedMesh (1 draw call) instead of 27 separate meshes.
+ */
+function CubieBodies() {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const geometry = useMemo(
+    () => new RoundedBoxGeometry(CUBIE_SIZE, CUBIE_SIZE, CUBIE_SIZE, 2, 0.12),
+    []
+  );
+  const count = AXIS_POSITIONS.length ** 3;
+
+  useLayoutEffect(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+    const matrix = new THREE.Matrix4();
+    let i = 0;
+    for (const x of AXIS_POSITIONS) {
+      for (const y of AXIS_POSITIONS) {
+        for (const z of AXIS_POSITIONS) {
+          matrix.setPosition(x, y, z);
+          mesh.setMatrixAt(i, matrix);
+          i += 1;
+        }
+      }
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+  }, []);
+
+  return (
+    <instancedMesh ref={meshRef} args={[geometry, undefined, count]} castShadow receiveShadow>
+      <meshPhysicalMaterial
+        color="#040406"
+        roughness={0.45}
+        metalness={0.2}
+        clearcoat={0.6}
+        clearcoatRoughness={0.3}
+      />
+    </instancedMesh>
+  );
+}
+
+/**
+ * Non-interactive faces (5 of the 6) have a uniform color across all 9
+ * stickers, so each face is one InstancedMesh instead of 9 separate meshes.
+ */
+function DecorativeFace({ face, color }: { face: FaceDefinition; color: string }) {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const geometry = useMemo(
+    () => new RoundedBoxGeometry(STICKER_SIZE, STICKER_SIZE, 0.06, 1, 0.07),
+    []
+  );
+
+  useLayoutEffect(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+    const euler = new THREE.Euler(...face.rotation);
+    const quaternion = new THREE.Quaternion().setFromEuler(euler);
+    const position = new THREE.Vector3();
+    const scale = new THREE.Vector3(1, 1, 1);
+    const matrix = new THREE.Matrix4();
+    for (let gridIndex = 0; gridIndex < 9; gridIndex += 1) {
+      const [u, v] = gridIndexToColRow(gridIndex);
+      position.set(u, v, STICKER_OFFSET).applyEuler(euler);
+      matrix.compose(position, quaternion, scale);
+      mesh.setMatrixAt(gridIndex, matrix);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+  }, [face]);
+
+  return (
+    <instancedMesh ref={meshRef} args={[geometry, undefined, 9]} castShadow receiveShadow>
+      <meshPhysicalMaterial
+        color={color}
+        emissive={color}
+        emissiveIntensity={0.18}
+        roughness={0.28}
+        metalness={0.08}
+        clearcoat={1}
+        clearcoatRoughness={0.18}
+      />
+    </instancedMesh>
+  );
+}
 
 interface RubiksCubeProps {
   selectedFeature: Feature | null;
@@ -45,9 +142,8 @@ function CameraRig({ focused }: { focused: boolean }) {
 
 export function RubiksCube({ selectedFeature, onSelectFeature, onHoverChange }: RubiksCubeProps) {
   const [hoveredTile, setHoveredTile] = useState<string | null>(null);
-  const paused = hoveredTile !== null || selectedFeature !== null;
-  const { groupRef, wasDraggingRef, focusToFront, releaseFocus } = useCubeRotation({ paused });
-  const bodyMaterialRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const { groupRef, wasDraggingRef, focusToFront, releaseFocus } = useCubeRotation();
+  const occluderRef = useRef<THREE.Group>(null);
 
   useEffect(() => {
     onHoverChange?.(hoveredTile !== null);
@@ -71,7 +167,7 @@ export function RubiksCube({ selectedFeature, onSelectFeature, onHoverChange }: 
         position={[5, 8, 5]}
         intensity={1.4}
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0005}
       />
       <pointLight position={[-4, -1.5, 4]} intensity={0.7} color="#a855f7" />
@@ -79,45 +175,26 @@ export function RubiksCube({ selectedFeature, onSelectFeature, onHoverChange }: 
       <Environment preset="city" environmentIntensity={0.6} />
 
       <group ref={groupRef}>
-        {AXIS_POSITIONS.map((x) =>
-          AXIS_POSITIONS.map((y) =>
-            AXIS_POSITIONS.map((z) => (
-              <RoundedBox
-                key={`cubie-${x}-${y}-${z}`}
-                args={[CUBIE_SIZE, CUBIE_SIZE, CUBIE_SIZE]}
-                radius={0.12}
-                smoothness={4}
-                position={[x, y, z]}
-                castShadow
-                receiveShadow
-              >
-                <meshPhysicalMaterial
-                  ref={bodyMaterialRef}
-                  color="#040406"
-                  roughness={0.45}
-                  metalness={0.2}
-                  clearcoat={0.6}
-                  clearcoatRoughness={0.3}
-                />
-              </RoundedBox>
-            ))
-          )
-        )}
-
-        {FACE_DEFINITIONS.map((face) => {
-          const interactive = face.axis === "z" && face.sign === 1;
-          return (
-            <CubeFace
+        <group ref={occluderRef}>
+          <CubieBodies />
+          {DECORATIVE_FACES.map((face) => (
+            <DecorativeFace
               key={`face-${face.axis}${face.sign}`}
               face={face}
-              baseColor={interactive ? "#0b1024" : FACE_BASE_COLORS[`${face.axis}${face.sign}`]}
-              interactive={interactive}
-              wasDraggingRef={wasDraggingRef}
-              onSelectFeature={handleSelect}
-              onHoverChange={setHoveredTile}
+              color={FACE_BASE_COLORS[`${face.axis}${face.sign}`]}
             />
-          );
-        })}
+          ))}
+        </group>
+
+        <CubeFace
+          face={FRONT_FACE}
+          baseColor="#050505"
+          interactive
+          wasDraggingRef={wasDraggingRef}
+          occluderRef={occluderRef as React.RefObject<THREE.Object3D>}
+          onSelectFeature={handleSelect}
+          onHoverChange={setHoveredTile}
+        />
       </group>
 
       <ContactShadows
@@ -127,6 +204,8 @@ export function RubiksCube({ selectedFeature, onSelectFeature, onHoverChange }: 
         blur={2.6}
         far={4.5}
         color="#000000"
+        frames={1}
+        resolution={256}
       />
     </>
   );

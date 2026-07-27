@@ -20,7 +20,7 @@ export function AboutSection() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <p className="mb-3 text-sm font-medium uppercase tracking-widest text-accent-cyan">
-            About Rubik
+            About Share India Institutional Desk
           </p>
           <h2
             className="text-3xl font-bold text-white sm:text-4xl"
@@ -29,7 +29,7 @@ export function AboutSection() {
             Built by traders, for traders.
           </h2>
           <p className="mt-5 text-white/65">
-            Rubik started as an internal tool for a proprietary trading desk that was tired of
+            Share India Institutional Desk started as an internal tool for a proprietary trading desk that was tired of
             switching between six different apps to place one order. Today it&apos;s a full
             SEBI-registered broking platform, still obsessed with the same idea: every tool a
             trader needs, in one focused, beautifully engineered surface.

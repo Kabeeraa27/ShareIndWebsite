@@ -14,6 +14,7 @@ interface CubeTileProps {
   color: string;
   feature?: Feature;
   wasDraggingRef?: React.RefObject<boolean>;
+  occluderRef?: React.RefObject<THREE.Object3D>;
   onSelect?: (feature: Feature) => void;
   onHoverChange?: (id: string | null) => void;
 }
@@ -28,6 +29,7 @@ export function CubeTile({
   color,
   feature,
   wasDraggingRef,
+  occluderRef,
   onSelect,
   onHoverChange,
 }: CubeTileProps) {
@@ -40,7 +42,7 @@ export function CubeTile({
     const target = hovered ? 1 : 0;
     hoverT.current = THREE.MathUtils.damp(hoverT.current, target, 6, delta);
     if (materialRef.current) {
-      materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(0.18, 1.1, hoverT.current);
+      materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(0, 1.1, hoverT.current);
     }
     if (meshRef.current) {
       const s = THREE.MathUtils.lerp(1, 1.08, hoverT.current);
@@ -72,12 +74,13 @@ export function CubeTile({
         <meshPhysicalMaterial
           ref={materialRef}
           color={color}
-          emissive={color}
-          emissiveIntensity={0.18}
-          roughness={0.28}
+          emissive={feature?.color ?? color}
+          emissiveIntensity={0}
+          roughness={0.55}
           metalness={0.08}
-          clearcoat={1}
-          clearcoatRoughness={0.18}
+          clearcoat={0.3}
+          clearcoatRoughness={0.4}
+          envMapIntensity={0.25}
         />
       </RoundedBox>
 
@@ -85,8 +88,8 @@ export function CubeTile({
         <Html
           transform
           sprite
-          occlude="blending"
-          distanceFactor={4.2}
+          occlude={occluderRef ? [occluderRef] : undefined}
+          distanceFactor={5.3}
           position={[0, 0, 0.05]}
           zIndexRange={[10, 0]}
         >
@@ -102,7 +105,7 @@ export function CubeTile({
               boxShadow: hovered
                 ? `0 0 22px ${feature.glowColor}, 0 0 46px ${feature.glowColor}`
                 : "0 0 0 rgba(0,0,0,0)",
-              transform: hovered ? "scale(1.12)" : "scale(1)",
+              transform: hovered ? "scale(1.08)" : "scale(1)",
             }}
           >
             <feature.icon

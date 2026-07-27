@@ -15,9 +15,9 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "Rubik | The Next-Gen Trading Platform",
+  title: "Share India Institutional Desk | The Next-Gen Trading Platform",
   description:
-    "A premium stock broking platform. Explore Rubik's features through an interactive 3D cube built for traders who expect more.",
+    "A premium stock broking platform. Explore the Share India Institutional Desk through an interactive 3D cube built for traders who expect more.",
 };
 
 export default function RootLayout({

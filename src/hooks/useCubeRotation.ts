@@ -6,24 +6,19 @@ import * as THREE from "three";
 import gsap from "gsap";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
-const IDLE_SPEED = 0.12; // radians/sec
 const DRAG_ROTATION_SPEED = Math.PI * 1.6; // radians per full viewport width dragged
-const DRAG_CLICK_THRESHOLD = 6; // px of movement before a drag suppresses a click
+const DRAG_CLICK_THRESHOLD = 10; // px of movement before a drag suppresses a click
 const MOMENTUM_DAMPING = 0.94;
 const MOMENTUM_EPSILON = 0.0004;
 const SNAP_STEP = Math.PI / 2;
 
-interface UseCubeRotationOptions {
-  /** Pauses idle auto-rotation (hover, open panel, etc). Drag still works. */
-  paused: boolean;
-}
-
 /**
- * Drives the cube group's rotation: slow idle spin at rest, direct
- * drag-to-rotate, momentum + GSAP snap-to-axis on release, and an
- * imperative `focusToFront` used when a tile is selected.
+ * Drives the cube group's rotation: static at rest (no idle spin, so tiles
+ * stay put and are easy to aim at), direct drag-to-rotate, momentum + GSAP
+ * snap-to-axis on release, and an imperative `focusToFront` used when a
+ * tile is selected.
  */
-export function useCubeRotation({ paused }: UseCubeRotationOptions) {
+export function useCubeRotation() {
   const groupRef = useRef<THREE.Group>(null!);
   const reducedMotion = usePrefersReducedMotion();
   const { gl } = useThree();
@@ -64,6 +59,11 @@ export function useCubeRotation({ paused }: UseCubeRotationOptions) {
   const endDrag = useCallback(() => {
     if (!drag.current.isDragging) return;
     drag.current.isDragging = false;
+    // A plain click on a tile also passes through here (see the pointerdown
+    // capture listener below), but nothing actually rotated, so there's
+    // nothing to settle — snapping here would just jump the cube out from
+    // under the click.
+    if (drag.current.totalMove <= DRAG_CLICK_THRESHOLD) return;
     const hadMomentum =
       Math.hypot(drag.current.velocityX, drag.current.velocityY) > MOMENTUM_EPSILON;
     if (hadMomentum && !reducedMotion) {
@@ -73,14 +73,41 @@ export function useCubeRotation({ paused }: UseCubeRotationOptions) {
     }
   }, [reducedMotion, snapToNearestAxis]);
 
-  // Drag listeners live on the actual WebGL canvas (pointerdown) and the
-  // window (move/up), so a drag started on the cube keeps tracking even if
-  // the pointer strays outside the canvas bounds mid-gesture.
+  // Each front-face tile renders an HTML button (drei's <Html>) layered on
+  // top of the canvas for its icon/label, which would otherwise swallow
+  // pointerdown before it ever reaches the <canvas> element. Listening in
+  // the capture phase on window (gated to the canvas's bounding box) lets
+  // drag-start fire regardless of which DOM element is on top, while still
+  // leaving the button's own bubble-phase click handler untouched.
+  // The canvas itself has no mesh-level pointer interactivity in this app
+  // (all clicks are handled by the DOM tile buttons), so it's kept
+  // pointer-events:none — otherwise, with no `occlude="blending"` to force
+  // that (we use raycast occlusion instead), the canvas sits on top of the
+  // tile buttons for hit-testing and silently swallows every click.
+  useEffect(() => {
+    const canvas = gl.domElement;
+    canvas.style.pointerEvents = "none";
+    canvas.style.position = "absolute";
+    return () => {
+      canvas.style.pointerEvents = "";
+      canvas.style.position = "";
+    };
+  }, [gl]);
+
   useEffect(() => {
     const canvas = gl.domElement;
 
     const onPointerDown = (e: PointerEvent) => {
       if (isFocusedRef.current) return;
+      const rect = canvas.getBoundingClientRect();
+      if (
+        e.clientX < rect.left ||
+        e.clientX > rect.right ||
+        e.clientY < rect.top ||
+        e.clientY > rect.bottom
+      ) {
+        return;
+      }
       drag.current.isDragging = true;
       drag.current.lastX = e.clientX;
       drag.current.lastY = e.clientY;
@@ -112,12 +139,12 @@ export function useCubeRotation({ paused }: UseCubeRotationOptions) {
 
     const onPointerUp = () => endDrag();
 
-    canvas.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerdown", onPointerDown, { capture: true });
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerUp);
     return () => {
-      canvas.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerdown", onPointerDown, { capture: true });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
@@ -141,11 +168,6 @@ export function useCubeRotation({ paused }: UseCubeRotationOptions) {
         momentumActive.current = false;
         snapToNearestAxis();
       }
-      return;
-    }
-
-    if (!paused && !reducedMotion) {
-      group.rotation.y += IDLE_SPEED * delta;
     }
   });
 

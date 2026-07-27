@@ -53,8 +53,9 @@ export function Hero() {
           <span className="gradient-text text-glow">solved in one cube.</span>
         </h1>
         <p className="mt-5 max-w-xl text-base text-white/65 sm:text-lg">
-          Rubik brings your dashboard, analytics, AI research, and security into a
-          single interactive experience. Drag the cube. Explore a feature. Start trading.
+          Share India Institutional Desk brings your dashboard, analytics, AI research, and
+          security into a single interactive experience. Drag the cube. Explore a feature.
+          Start trading.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
@@ -82,7 +83,7 @@ export function Hero() {
       >
         <Canvas
           shadows
-          dpr={[1, 2]}
+          dpr={[1, 1.5]}
           camera={{ position: [0, 0, 6.4], fov: 45, near: 0.1, far: 100 }}
           style={{ touchAction: "none" }}
           gl={{ antialias: true, alpha: true }}
