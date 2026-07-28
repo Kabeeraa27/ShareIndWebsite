@@ -4,7 +4,7 @@ import * as THREE from "three";
 export const CUBIE_SIZE = 1;
 export const GAP = 0.08;
 export const STEP = CUBIE_SIZE + GAP;
-export const STICKER_SIZE = CUBIE_SIZE * 0.86;
+export const STICKER_SIZE = CUBIE_SIZE * 0.92;
 export const STICKER_OFFSET = STEP + CUBIE_SIZE / 2 + 0.02;
 
 /** -1, 0, 1 axis positions for the 3x3x3 grid. */

@@ -39,6 +39,9 @@ yarn-error.log*
 # playwright screenshots
 /shots
 
+# personal/local Claude Code overrides (not shared project config)
+.claude/settings.local.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

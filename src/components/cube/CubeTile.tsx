@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
@@ -15,6 +15,8 @@ interface CubeTileProps {
   feature?: Feature;
   wasDraggingRef?: React.RefObject<boolean>;
   occluderRef?: React.RefObject<THREE.Object3D>;
+  /** Ancestor scale applied to the whole cube; see RubiksCubeProps. */
+  cubeScale?: number;
   onSelect?: (feature: Feature) => void;
   onHoverChange?: (id: string | null) => void;
 }
@@ -30,6 +32,7 @@ export function CubeTile({
   feature,
   wasDraggingRef,
   occluderRef,
+  cubeScale = 1,
   onSelect,
   onHoverChange,
 }: CubeTileProps) {
@@ -38,11 +41,20 @@ export function CubeTile({
   const [hovered, setHovered] = useState(false);
   const hoverT = useRef(0);
 
+  // A view-independent "floor" emissive (matching the sticker's own base
+  // color) keeps the whole tile at a consistent, perceptible brightness
+  // regardless of the scene's directional light angle — without it, only
+  // the brightly-lit top of a black sticker reads as "the tile," making a
+  // perfectly-centered badge look like it's sitting too low.
+  const restEmissive = useMemo(() => new THREE.Color(color), [color]);
+  const hoverEmissive = useMemo(() => new THREE.Color(feature?.color ?? color), [feature?.color, color]);
+
   useFrame((_, delta) => {
     const target = hovered ? 1 : 0;
     hoverT.current = THREE.MathUtils.damp(hoverT.current, target, 6, delta);
     if (materialRef.current) {
-      materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(0, 1.1, hoverT.current);
+      materialRef.current.emissive.copy(restEmissive).lerp(hoverEmissive, hoverT.current);
+      materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(0.75, 1.2, hoverT.current);
     }
     if (meshRef.current) {
       const s = THREE.MathUtils.lerp(1, 1.08, hoverT.current);
@@ -74,22 +86,31 @@ export function CubeTile({
         <meshPhysicalMaterial
           ref={materialRef}
           color={color}
-          emissive={feature?.color ?? color}
-          emissiveIntensity={0}
-          roughness={0.55}
-          metalness={0.08}
-          clearcoat={0.3}
-          clearcoatRoughness={0.4}
-          envMapIntensity={0.25}
+          emissive={color}
+          emissiveIntensity={0.75}
+          roughness={0.75}
+          metalness={0.05}
+          clearcoat={0.15}
+          clearcoatRoughness={0.6}
+          envMapIntensity={0.15}
         />
       </RoundedBox>
 
       {feature && (
+        // Deliberately NOT using transform+sprite mode: drei builds that
+        // mode's screen position from a hand-rolled CSS billboard matrix
+        // which, verified empirically (a 3D marker at the tile's true
+        // center vs. the rendered badge position, sampled across all 9
+        // grid cells), introduces a radial distortion that grows with
+        // distance from the view center — tens of px off on corner tiles,
+        // in different directions per tile, not a fixable constant offset.
+        // Default (non-transform) mode positions via THREE's own
+        // Vector3.project(camera), the standard/correct 3D->2D projection,
+        // which doesn't carry that bug.
         <Html
-          transform
-          sprite
+          center
           occlude={occluderRef ? [occluderRef] : undefined}
-          distanceFactor={5.3}
+          distanceFactor={5.3 / cubeScale}
           position={[0, 0, 0.05]}
           zIndexRange={[10, 0]}
         >

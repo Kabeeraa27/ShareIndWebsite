@@ -2,10 +2,10 @@ import {
   LayoutDashboard,
   LineChart,
   FileBarChart,
+  FolderOpen,
   Sparkles,
   ShieldCheck,
   Plug,
-  Bell,
   Users,
   Settings,
   type LucideIcon,
@@ -27,6 +27,8 @@ export interface Feature {
   /** Accent color used for the tile glow, icon tint, and panel theming. */
   color: string;
   glowColor: string;
+  /** When set, the panel's CTA navigates here instead of being a dead button. */
+  href?: string;
 }
 
 export const features: Feature[] = [
@@ -63,9 +65,9 @@ export const features: Feature[] = [
     glowColor: "rgba(34,211,238,0.65)",
   },
   {
-    id: "reports",
+    id: "account-reports",
     gridIndex: 2,
-    name: "Reports",
+    name: "Account Reports",
     tagline: "Clarity, delivered automatically",
     description:
       "Automated tax statements, contract notes, and performance reports generated the moment you need them, exportable in the formats your accountant loves.",
@@ -127,20 +129,21 @@ export const features: Feature[] = [
     glowColor: "rgba(34,211,238,0.65)",
   },
   {
-    id: "notifications",
+    id: "reports",
     gridIndex: 6,
-    name: "Notifications",
-    tagline: "Never miss a market-moving moment",
+    name: "Reports",
+    tagline: "Sector research, organized like a filing cabinet",
     description:
-      "Granular, real-time alerts for price targets, order fills, and portfolio events delivered exactly where you want them: push, SMS, or email.",
+      "Browse institutional-grade sector research the way you'd flip through a real file cabinet — pick a sector, open the file, and get straight to the reports that matter.",
     benefits: [
-      "Custom price & volume triggers",
-      "Multi-channel delivery (push/SMS/email)",
-      "Smart digesting to cut alert fatigue",
+      "13 sectors covered, from BFSI to Textiles",
+      "Fresh research reports added regularly",
+      "One click from cube to full report",
     ],
-    icon: Bell,
+    icon: FolderOpen,
     color: "#a855f7",
     glowColor: "rgba(168,85,247,0.65)",
+    href: "/reports",
   },
   {
     id: "user-management",

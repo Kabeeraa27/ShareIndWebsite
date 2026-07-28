@@ -15,6 +15,8 @@ interface CubeFaceProps {
   wasDraggingRef?: React.RefObject<boolean>;
   /** The cube's non-interactive geometry, raycast against to hide tiles rotated out of view. */
   occluderRef?: React.RefObject<THREE.Object3D>;
+  /** Ancestor scale applied to the whole cube; see RubiksCubeProps. */
+  cubeScale?: number;
   onSelectFeature?: (feature: Feature) => void;
   onHoverChange?: (id: string | null) => void;
 }
@@ -26,6 +28,7 @@ export function CubeFace({
   interactive,
   wasDraggingRef,
   occluderRef,
+  cubeScale,
   onSelectFeature,
   onHoverChange,
 }: CubeFaceProps) {
@@ -47,6 +50,7 @@ export function CubeFace({
             feature={feature}
             wasDraggingRef={wasDraggingRef}
             occluderRef={occluderRef}
+            cubeScale={cubeScale}
             onSelect={onSelectFeature}
             onHoverChange={onHoverChange}
           />

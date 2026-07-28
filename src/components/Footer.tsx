@@ -1,4 +1,5 @@
-import { AtSign, Boxes, Globe, MessageCircle } from "lucide-react";
+import Image from "next/image";
+import { AtSign, Globe, MessageCircle } from "lucide-react";
 
 const COLUMNS = [
   {
@@ -26,8 +27,14 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-6">
           <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent-blue via-accent-purple to-accent-pink">
-                <Boxes size={18} className="text-white" aria-hidden="true" />
+              <span className="flex h-9 w-9 items-center justify-center">
+                <Image
+                  src="/logo-mark.png"
+                  alt=""
+                  width={447}
+                  height={409}
+                  className="h-full w-full object-contain"
+                />
               </span>
               <span
                 className="gradient-text text-lg font-semibold"

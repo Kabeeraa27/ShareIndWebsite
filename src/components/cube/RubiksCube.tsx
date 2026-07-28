@@ -118,6 +118,15 @@ interface RubiksCubeProps {
   selectedFeature: Feature | null;
   onSelectFeature: (feature: Feature) => void;
   onHoverChange?: (hovering: boolean) => void;
+  /**
+   * The ancestor `<group scale={cubeScale}>` this cube is rendered inside
+   * (see Hero.tsx). Drei's Html "sprite" mode positions its DOM overlay
+   * using the tile's full world matrix, but sizes it using only the Html
+   * group's own local scale — ancestor scale is silently ignored. Threading
+   * the real value down and applying it explicitly to each tile's Html
+   * keeps feature badges sized correctly at every responsive cube size.
+   */
+  cubeScale?: number;
 }
 
 /** Subtle mouse-parallax at rest, gentle dolly-in while a feature is focused. */
@@ -140,7 +149,12 @@ function CameraRig({ focused }: { focused: boolean }) {
   return null;
 }
 
-export function RubiksCube({ selectedFeature, onSelectFeature, onHoverChange }: RubiksCubeProps) {
+export function RubiksCube({
+  selectedFeature,
+  onSelectFeature,
+  onHoverChange,
+  cubeScale = 1,
+}: RubiksCubeProps) {
   const [hoveredTile, setHoveredTile] = useState<string | null>(null);
   const { groupRef, wasDraggingRef, focusToFront, releaseFocus } = useCubeRotation();
   const occluderRef = useRef<THREE.Group>(null);
@@ -188,10 +202,11 @@ export function RubiksCube({ selectedFeature, onSelectFeature, onHoverChange }: 
 
         <CubeFace
           face={FRONT_FACE}
-          baseColor="#050505"
+          baseColor="#12141f"
           interactive
           wasDraggingRef={wasDraggingRef}
           occluderRef={occluderRef as React.RefObject<THREE.Object3D>}
+          cubeScale={cubeScale}
           onSelectFeature={handleSelect}
           onHoverChange={setHoveredTile}
         />

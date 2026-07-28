@@ -25,6 +25,43 @@
   --font-display: var(--font-sora);
 }
 
+/* Institutional content sections (everything below the cube hero) are the
+   only part of the site that respond to the light/dark toggle — the cube,
+   Navbar, and Footer intentionally stay fixed. Default (light) is the
+   red/blue/white brand redesign; [data-theme="dark"] restores the site's
+   original dark/glass look for anyone who prefers it. */
+[data-theme="light"] {
+  --inst-bg: #ffffff;
+  --inst-bg-alt: #f0f7fc;
+  --inst-card-bg: #ffffff;
+  --inst-card-alt-bg: #e6f4fb;
+  --inst-border: rgba(0, 130, 198, 0.25);
+  --inst-heading: #003a5c;
+  --inst-text: #334155;
+  --inst-text-muted: rgba(51, 65, 85, 0.65);
+  --inst-primary: #0082c6;
+  --inst-primary-dark: #005a8c;
+  --inst-accent: #ed3237;
+  --inst-accent-dark: #c41e23;
+  --inst-overlay: rgba(0, 58, 92, 0.5);
+}
+
+[data-theme="dark"] {
+  --inst-bg: #050816;
+  --inst-bg-alt: #0b1024;
+  --inst-card-bg: rgba(255, 255, 255, 0.05);
+  --inst-card-alt-bg: rgba(255, 255, 255, 0.03);
+  --inst-border: rgba(255, 255, 255, 0.12);
+  --inst-heading: #f5f7ff;
+  --inst-text: rgba(245, 247, 255, 0.78);
+  --inst-text-muted: rgba(245, 247, 255, 0.55);
+  --inst-primary: #3b82f6;
+  --inst-primary-dark: #60a5fa;
+  --inst-accent: #ec4899;
+  --inst-accent-dark: #a855f7;
+  --inst-overlay: rgba(0, 0, 0, 0.6);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

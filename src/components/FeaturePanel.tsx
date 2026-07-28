@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Check, X } from "lucide-react";
 import type { Feature } from "@/data/features";
@@ -175,17 +176,31 @@ export function FeaturePanel({ feature, onClose }: FeaturePanelProps) {
                 </ul>
               </div>
 
-              <button
-                type="button"
-                className="mt-2 flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white transition-transform duration-200 hover:scale-[1.02]"
-                style={{
-                  background: `linear-gradient(90deg, ${feature.color}, #a855f7)`,
-                  boxShadow: `0 0 24px ${feature.glowColor}`,
-                }}
-              >
-                Explore {feature.name}
-                <ArrowRight size={16} />
-              </button>
+              {feature.href ? (
+                <Link
+                  href={feature.href}
+                  className="mt-2 flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white transition-transform duration-200 hover:scale-[1.02]"
+                  style={{
+                    background: `linear-gradient(90deg, ${feature.color}, #a855f7)`,
+                    boxShadow: `0 0 24px ${feature.glowColor}`,
+                  }}
+                >
+                  Explore {feature.name}
+                  <ArrowRight size={16} />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="mt-2 flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white transition-transform duration-200 hover:scale-[1.02]"
+                  style={{
+                    background: `linear-gradient(90deg, ${feature.color}, #a855f7)`,
+                    boxShadow: `0 0 24px ${feature.glowColor}`,
+                  }}
+                >
+                  Explore {feature.name}
+                  <ArrowRight size={16} />
+                </button>
+              )}
             </div>
           </motion.div>
         </>

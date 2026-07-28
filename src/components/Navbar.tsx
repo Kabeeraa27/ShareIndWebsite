@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Boxes, Menu, X } from "lucide-react";
+import Image from "next/image";
+import { Menu, Moon, Sun, X } from "lucide-react";
+import { useTheme } from "./ThemeProvider";
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
-  { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
   { label: "About", href: "#about" },
+  { label: "Offerings", href: "#offerings" },
+  { label: "Leadership", href: "#leadership" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -16,6 +18,7 @@ const NAV_LINKS = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -39,8 +42,15 @@ export function Navbar() {
           className="group flex items-center gap-2 text-lg font-semibold tracking-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent-blue via-accent-purple to-accent-pink shadow-lg transition-transform duration-300 group-hover:scale-110">
-            <Boxes size={18} className="text-white" aria-hidden="true" />
+          <span className="flex h-9 w-9 items-center justify-center transition-transform duration-300 group-hover:scale-110">
+            <Image
+              src="/logo-mark.png"
+              alt=""
+              width={447}
+              height={409}
+              priority
+              className="h-full w-full object-contain"
+            />
           </span>
           <span className="gradient-text">Share India Institutional Desk</span>
         </a>
@@ -59,24 +69,22 @@ export function Navbar() {
         </ul>
 
         <div className="hidden items-center gap-3 md:flex">
-          <a
-            href="#login"
-            className="rounded-full px-4 py-2 text-sm font-medium text-white/85 transition-colors duration-200 hover:text-white"
-          >
-            Login
-          </a>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <MagneticButton href="#get-started">Get Started</MagneticButton>
         </div>
 
-        <button
-          type="button"
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileOpen}
-          onClick={() => setMobileOpen((v) => !v)}
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-white md:hidden"
-        >
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          <button
+            type="button"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen((v) => !v)}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-white"
+          >
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </nav>
 
       {mobileOpen && (
@@ -98,13 +106,10 @@ export function Navbar() {
                 </a>
               </li>
             ))}
-            <li className="mt-2 flex gap-3 px-2">
-              <a href="#login" className="flex-1 rounded-full border border-white/15 py-2 text-center text-sm">
-                Login
-              </a>
+            <li className="mt-2 px-2">
               <a
                 href="#get-started"
-                className="flex-1 rounded-full bg-gradient-to-r from-accent-blue to-accent-purple py-2 text-center text-sm font-medium"
+                className="block rounded-full bg-gradient-to-r from-accent-blue to-accent-purple py-2 text-center text-sm font-medium"
               >
                 Get Started
               </a>
@@ -113,6 +118,22 @@ export function Navbar() {
         </motion.div>
       )}
     </header>
+  );
+}
+
+/** Toggles the institutional sections between the new light redesign and
+ *  the site's original dark theme. Doesn't affect the cube, Navbar, or
+ *  Footer — those stay as-is regardless of the choice. */
+function ThemeToggle({ theme, onToggle }: { theme: "light" | "dark"; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+      className="flex h-9 w-9 items-center justify-center rounded-full text-white/75 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+    >
+      {theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
+    </button>
   );
 }
 

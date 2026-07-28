@@ -35,6 +35,17 @@ export function Hero() {
     >
       <Background accentGlow={cubeHovering} />
 
+      {/* Blends the dark hero into the light institutional sections below,
+          instead of a hard cut between the two themes. Kept shallow and
+          z-index'd below the cube's canvas wrapper (z-10) so it only fades
+          the section's bottom padding — the canvas itself has a transparent
+          background (alpha:true), so a taller overlay here would bleed
+          through the gaps between tiles and wash out the bottom row. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-24 bg-gradient-to-b from-transparent to-[var(--inst-bg)]"
+        aria-hidden="true"
+      />
+
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -67,10 +78,10 @@ export function Hero() {
             <ArrowRight size={16} />
           </a>
           <a
-            href="#features"
+            href="#offerings"
             className="glass rounded-full px-7 py-3 text-sm font-medium text-white/85 transition-colors duration-200 hover:text-white"
           >
-            Explore Features
+            Explore Offerings
           </a>
         </div>
       </motion.div>
@@ -94,6 +105,7 @@ export function Hero() {
                 selectedFeature={selectedFeature}
                 onSelectFeature={setSelectedFeature}
                 onHoverChange={setCubeHovering}
+                cubeScale={cubeScale}
               />
             </group>
           </Suspense>
