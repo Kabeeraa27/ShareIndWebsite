@@ -8,10 +8,12 @@ import {
   X,
   Home,
   Building2,
+  Award,
   Layers,
-  Users,
+  Users2,
   IdCard,
   FolderOpen,
+  PieChart,
   Phone,
   type LucideIcon,
 } from "lucide-react";
@@ -25,12 +27,14 @@ interface MenuEntry {
 
 const ENTRIES: MenuEntry[] = [
   { label: "Home", href: "/", icon: Home, description: "Back to the cube" },
-  { label: "About Us", href: "/#about", icon: Building2, description: "Who we are" },
-  { label: "Offerings", href: "/#offerings", icon: Layers, description: "What we provide" },
-  { label: "Leadership", href: "/#leadership", icon: Users, description: "Meet the leaders" },
+  { label: "About Us", href: "/about", icon: Building2, description: "Who we are" },
+  { label: "Differentiators", href: "/differentiators", icon: Award, description: "What sets us apart" },
+  { label: "Leadership", href: "/leadership", icon: Users2, description: "Meet the leaders" },
+  { label: "Offerings", href: "/offerings", icon: Layers, description: "What we provide" },
   { label: "Our Team", href: "/team", icon: IdCard, description: "The analyst desk" },
   { label: "Reports", href: "/reports", icon: FolderOpen, description: "Sector research" },
-  { label: "Contact", href: "/#contact", icon: Phone, description: "Get in touch" },
+  { label: "Sector Expertise", href: "/sectors", icon: PieChart, description: "13 sectors covered" },
+  { label: "Contact", href: "/contact", icon: Phone, description: "Get in touch" },
 ];
 
 /** Global sitemap overlay, reachable from the top-right corner on every

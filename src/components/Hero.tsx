@@ -91,7 +91,7 @@ export function Hero() {
             <ArrowRight size={16} />
           </a>
           <a
-            href="#offerings"
+            href="/offerings"
             className="glass rounded-full px-7 py-3 text-sm font-medium text-white/85 transition-colors duration-200 hover:text-white"
           >
             Explore Offerings

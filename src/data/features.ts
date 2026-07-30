@@ -1,13 +1,13 @@
 import {
-  LayoutDashboard,
-  LineChart,
+  Building2,
+  Award,
   FileBarChart,
   FolderOpen,
-  Sparkles,
+  Users2,
   IdCard,
-  Plug,
-  Users,
-  Settings,
+  Layers,
+  PieChart,
+  Phone,
   type LucideIcon,
 } from "lucide-react";
 
@@ -31,38 +31,47 @@ export interface Feature {
   href?: string;
 }
 
+const BLUE = "#1b6fb8";
+const RED = "#ce2626";
+const NAVY = "#0a2947";
+const BLUE_GLOW = "rgba(27,111,184,0.65)";
+const RED_GLOW = "rgba(206,38,38,0.65)";
+const NAVY_GLOW = "rgba(10,41,71,0.65)";
+
 export const features: Feature[] = [
   {
-    id: "dashboard",
+    id: "about-us",
     gridIndex: 0,
-    name: "Dashboard",
-    tagline: "Your entire portfolio, one glance away",
+    name: "About Us",
+    tagline: "Insight. Access. Execution.",
     description:
-      "A unified command center that surfaces your holdings, watchlists, and market movers in real time, so you always know where you stand before the bell rings.",
+      "Three decades of broking excellence behind a boutique institutional desk — who we are, who we serve, and where we operate.",
     benefits: [
-      "Live portfolio valuation with P&L breakdowns",
-      "Customizable widgets and layouts",
-      "Cross-device sync in real time",
+      "Top 10 player in India's derivatives market",
+      "Serving Mutual Funds, FIIs, DIIs, PMS, and more",
+      "Presence across Mumbai, Delhi, Singapore, Dubai, Pune, Chennai",
     ],
-    icon: LayoutDashboard,
-    color: "#3b82f6",
-    glowColor: "rgba(59,130,246,0.65)",
+    icon: Building2,
+    color: BLUE,
+    glowColor: BLUE_GLOW,
+    href: "/about",
   },
   {
-    id: "analytics",
+    id: "differentiators",
     gridIndex: 1,
-    name: "Analytics",
-    tagline: "Data that trades with you",
+    name: "Differentiators",
+    tagline: "Research-Led. Relationship-Driven. Result-Focused.",
     description:
-      "Institutional-grade charting and technical analysis tools, powered by low-latency market data feeds, built for traders who act on signal, not noise.",
+      "What sets the desk apart: differentiated research, proactive corporate access, and execution infrastructure built for scale.",
     benefits: [
-      "100+ technical indicators & overlays",
-      "Custom scripting for strategy backtests",
-      "Millisecond-accurate historical data",
+      "100+ companies covering varied sectors",
+      "Proactive, well-connected corporate access team",
+      "Low-latency, seamless DMA and colo services",
     ],
-    icon: LineChart,
-    color: "#22d3ee",
-    glowColor: "rgba(34,211,238,0.65)",
+    icon: Award,
+    color: RED,
+    glowColor: RED_GLOW,
+    href: "/differentiators",
   },
   {
     id: "account-reports",
@@ -81,20 +90,21 @@ export const features: Feature[] = [
     glowColor: "rgba(168,85,247,0.65)",
   },
   {
-    id: "ai-assistant",
+    id: "leadership",
     gridIndex: 3,
-    name: "AI Assistant",
-    tagline: "Your co-pilot for every market move",
+    name: "Leadership",
+    tagline: "Driven by Experience. Defined by Insight.",
     description:
-      "An always-on AI research analyst that reads filings, summarizes earnings calls, and flags portfolio risk before it becomes a headline.",
+      "The leadership team behind Share India's institutional edge, bringing decades of combined experience across research, sales, and trading.",
     benefits: [
-      "Natural-language portfolio queries",
-      "Instant earnings & filing summaries",
-      "Proactive risk & anomaly alerts",
+      "Decades of combined capital markets experience",
+      "Backgrounds spanning CLSA, DAIWA, IDFC, PL, Elara, ASK",
+      "Direct oversight of the institutional strategy",
     ],
-    icon: Sparkles,
-    color: "#ec4899",
-    glowColor: "rgba(236,72,153,0.65)",
+    icon: Users2,
+    color: NAVY,
+    glowColor: NAVY_GLOW,
+    href: "/leadership",
   },
   {
     id: "our-team",
@@ -114,20 +124,21 @@ export const features: Feature[] = [
     glowColor: "rgba(59,130,246,0.65)",
   },
   {
-    id: "integrations",
+    id: "offerings",
     gridIndex: 5,
-    name: "Integrations",
-    tagline: "Plays well with your whole stack",
+    name: "Offerings",
+    tagline: "Every desk you need",
     description:
-      "Connect your accounting software, tax tools, and third-party algo platforms through a robust API and a growing library of native integrations.",
+      "Research, Sales, Dealing, Corporate Access, and Operations, working as one desk built around institutional clients.",
     benefits: [
-      "REST & WebSocket trading APIs",
-      "Native connectors for popular tools",
-      "Webhook-based order automation",
+      "Single point of contact model",
+      "Low-impact execution across cash and derivatives",
+      "Strong risk management and reconciliation framework",
     ],
-    icon: Plug,
-    color: "#22d3ee",
-    glowColor: "rgba(34,211,238,0.65)",
+    icon: Layers,
+    color: BLUE,
+    glowColor: BLUE_GLOW,
+    href: "/offerings",
   },
   {
     id: "reports",
@@ -147,36 +158,37 @@ export const features: Feature[] = [
     href: "/reports",
   },
   {
-    id: "user-management",
+    id: "sector-expertise",
     gridIndex: 7,
-    name: "User Management",
-    tagline: "Built for teams, not just individuals",
+    name: "Sector Expertise",
+    tagline: "Coverage across every sector",
     description:
-      "Role-based access for family accounts, advisory desks, and institutional teams, with granular permissions and a full audit trail.",
+      "13 sectors of dedicated research coverage, from BFSI to Textiles, each backed by specialist analysts.",
     benefits: [
-      "Role-based access control",
-      "Sub-accounts for family & teams",
-      "Full activity audit logs",
+      "13 sectors, from BFSI to Textiles",
+      "Specialist analyst per sector cluster",
+      "Deep, high-conviction small-cap research",
     ],
-    icon: Users,
-    color: "#ec4899",
-    glowColor: "rgba(236,72,153,0.65)",
+    icon: PieChart,
+    color: RED,
+    glowColor: RED_GLOW,
+    href: "/sectors",
   },
   {
-    id: "settings",
+    id: "contact",
     gridIndex: 8,
-    name: "Settings",
-    tagline: "Make it feel like yours",
-    description:
-      "Fine-tune order defaults, risk limits, themes, and notification rules so the platform adapts to your workflow, not the other way around.",
+    name: "Contact",
+    tagline: "Let's talk",
+    description: "Reach the institutional desk directly, or find us across our offices.",
     benefits: [
-      "Custom order & risk defaults",
-      "Personalized themes & layouts",
-      "Granular privacy controls",
+      "Direct line to the institutional desk",
+      "Offices across India, Singapore, and Dubai",
+      "Follow us for research and market updates",
     ],
-    icon: Settings,
-    color: "#3b82f6",
-    glowColor: "rgba(59,130,246,0.65)",
+    icon: Phone,
+    color: BLUE,
+    glowColor: BLUE_GLOW,
+    href: "/contact",
   },
 ];
 

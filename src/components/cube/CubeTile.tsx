@@ -7,6 +7,7 @@ import * as THREE from "three";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Feature } from "@/data/features";
 import { STICKER_SIZE } from "@/lib/cubeLayout";
+import { assembleT, assembleFullyDone, randomFlightOffset, randomDelay } from "@/lib/assemble";
 
 interface CubeTileProps {
   position: [number, number, number];
@@ -38,8 +39,14 @@ export function CubeTile({
 }: CubeTileProps) {
   const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
   const meshRef = useRef<THREE.Mesh>(null);
+  const entryGroupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const hoverT = useRef(0);
+
+  // On-mount "fly in and assemble" entry, independent of every other tile.
+  const entrySeed = useMemo(() => ({ offset: randomFlightOffset(1.6, 3), delay: randomDelay() }), []);
+  const entryStartRef = useRef<number | null>(null);
+  const entryDoneRef = useRef(false);
 
   // A view-independent "floor" emissive (matching the sticker's own base
   // color) keeps the whole tile at a consistent, perceptible brightness
@@ -49,7 +56,7 @@ export function CubeTile({
   const restEmissive = useMemo(() => new THREE.Color(color), [color]);
   const hoverEmissive = useMemo(() => new THREE.Color(feature?.color ?? color), [feature?.color, color]);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     const target = hovered ? 1 : 0;
     hoverT.current = THREE.MathUtils.damp(hoverT.current, target, 6, delta);
     if (materialRef.current) {
@@ -59,6 +66,19 @@ export function CubeTile({
     if (meshRef.current) {
       const s = THREE.MathUtils.lerp(1, 1.08, hoverT.current);
       meshRef.current.scale.setScalar(s);
+    }
+
+    if (!entryDoneRef.current && entryGroupRef.current) {
+      const elapsed = state.clock.getElapsedTime();
+      if (entryStartRef.current === null) entryStartRef.current = elapsed;
+      const t = assembleT(elapsed, entryStartRef.current, entrySeed.delay);
+      const remaining = 1 - t;
+      entryGroupRef.current.position.set(
+        entrySeed.offset.x * remaining,
+        entrySeed.offset.y * remaining,
+        entrySeed.offset.z * remaining
+      );
+      if (assembleFullyDone(elapsed, entryStartRef.current)) entryDoneRef.current = true;
     }
   });
 
@@ -75,6 +95,7 @@ export function CubeTile({
 
   return (
     <group position={position} rotation={rotation}>
+      <group ref={entryGroupRef}>
       <RoundedBox
         ref={meshRef}
         args={[STICKER_SIZE, STICKER_SIZE, 0.06]}
@@ -159,6 +180,7 @@ export function CubeTile({
           </button>
         </Html>
       )}
+      </group>
     </group>
   );
 }

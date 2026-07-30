@@ -10,12 +10,12 @@ import { SiteMenu } from "./SiteMenu";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/#about" },
-  { label: "Offerings", href: "/#offerings" },
-  { label: "Leadership", href: "/#leadership" },
+  { label: "About", href: "/about" },
+  { label: "Offerings", href: "/offerings" },
+  { label: "Leadership", href: "/leadership" },
   { label: "Reports", href: "/reports" },
   { label: "Team", href: "/team" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 /** Sticky, glassmorphic nav bar that stays transparent until the page scrolls. */

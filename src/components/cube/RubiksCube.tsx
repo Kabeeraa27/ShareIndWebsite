@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows, Environment } from "@react-three/drei";
 import * as THREE from "three";
@@ -16,6 +16,7 @@ import {
   gridIndexToColRow,
   type FaceDefinition,
 } from "@/lib/cubeLayout";
+import { assembleT, assembleFullyDone, randomFlightOffset, randomDelay } from "@/lib/assemble";
 import type { Feature } from "@/data/features";
 
 const FACE_BASE_COLORS: Record<string, string> = {
@@ -32,6 +33,11 @@ const DECORATIVE_FACES = FACE_DEFINITIONS.filter((f) => !(f.axis === "z" && f.si
 /**
  * The 27 body cubies are identical in shape and material, so they're drawn as
  * a single InstancedMesh (1 draw call) instead of 27 separate meshes.
+ *
+ * On mount, each cubie flies in from a random point in space to its final
+ * grid position — a per-instance random offset/delay, eased and applied
+ * every frame via useFrame until the whole set has settled, at which point
+ * the per-frame work stops.
  */
 function CubieBodies() {
   const meshRef = useRef<THREE.InstancedMesh>(null);
@@ -41,22 +47,59 @@ function CubieBodies() {
   );
   const count = AXIS_POSITIONS.length ** 3;
 
-  useLayoutEffect(() => {
-    const mesh = meshRef.current;
-    if (!mesh) return;
-    const matrix = new THREE.Matrix4();
-    let i = 0;
+  const finalPositions = useMemo(() => {
+    const positions: THREE.Vector3[] = [];
     for (const x of AXIS_POSITIONS) {
       for (const y of AXIS_POSITIONS) {
         for (const z of AXIS_POSITIONS) {
-          matrix.setPosition(x, y, z);
-          mesh.setMatrixAt(i, matrix);
-          i += 1;
+          positions.push(new THREE.Vector3(x, y, z));
         }
       }
     }
-    mesh.instanceMatrix.needsUpdate = true;
+    return positions;
   }, []);
+
+  const flightSeeds = useMemo(
+    () =>
+      finalPositions.map(() => ({
+        offset: randomFlightOffset(1.8, 3.4),
+        delay: randomDelay(),
+      })),
+    [finalPositions]
+  );
+
+  const startTimeRef = useRef<number | null>(null);
+  const doneRef = useRef(false);
+
+  useFrame((state) => {
+    const mesh = meshRef.current;
+    if (!mesh || doneRef.current) return;
+    const elapsed = state.clock.getElapsedTime();
+    if (startTimeRef.current === null) startTimeRef.current = elapsed;
+    const startTime = startTimeRef.current;
+
+    const matrix = new THREE.Matrix4();
+    const pos = new THREE.Vector3();
+    const scale = new THREE.Vector3(1, 1, 1);
+    const quat = new THREE.Quaternion();
+
+    finalPositions.forEach((finalPos, i) => {
+      const { offset, delay } = flightSeeds[i];
+      const t = assembleT(elapsed, startTime, delay);
+      const remaining = 1 - t;
+      pos.set(
+        finalPos.x + offset.x * remaining,
+        finalPos.y + offset.y * remaining,
+        finalPos.z + offset.z * remaining
+      );
+      quat.setFromEuler(new THREE.Euler(remaining * Math.PI * 1.5, remaining * Math.PI * 1.5, 0));
+      matrix.compose(pos, quat, scale);
+      mesh.setMatrixAt(i, matrix);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+
+    if (assembleFullyDone(elapsed, startTime)) doneRef.current = true;
+  });
 
   return (
     <instancedMesh ref={meshRef} args={[geometry, undefined, count]} castShadow receiveShadow>
@@ -74,6 +117,8 @@ function CubieBodies() {
 /**
  * Non-interactive faces (5 of the 6) have a uniform color across all 9
  * stickers, so each face is one InstancedMesh instead of 9 separate meshes.
+ * Same fly-in-and-settle treatment as the body cubies, independently timed
+ * per sticker.
  */
 function DecorativeFace({ face, color }: { face: FaceDefinition; color: string }) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
@@ -82,22 +127,57 @@ function DecorativeFace({ face, color }: { face: FaceDefinition; color: string }
     []
   );
 
-  useLayoutEffect(() => {
-    const mesh = meshRef.current;
-    if (!mesh) return;
+  const finalTransforms = useMemo(() => {
     const euler = new THREE.Euler(...face.rotation);
     const quaternion = new THREE.Quaternion().setFromEuler(euler);
-    const position = new THREE.Vector3();
-    const scale = new THREE.Vector3(1, 1, 1);
-    const matrix = new THREE.Matrix4();
+    const transforms: { position: THREE.Vector3; quaternion: THREE.Quaternion }[] = [];
     for (let gridIndex = 0; gridIndex < 9; gridIndex += 1) {
       const [u, v] = gridIndexToColRow(gridIndex);
-      position.set(u, v, STICKER_OFFSET).applyEuler(euler);
-      matrix.compose(position, quaternion, scale);
-      mesh.setMatrixAt(gridIndex, matrix);
+      const position = new THREE.Vector3(u, v, STICKER_OFFSET).applyEuler(euler);
+      transforms.push({ position, quaternion });
     }
-    mesh.instanceMatrix.needsUpdate = true;
+    return transforms;
   }, [face]);
+
+  const flightSeeds = useMemo(
+    () =>
+      finalTransforms.map(() => ({
+        offset: randomFlightOffset(1.6, 3),
+        delay: randomDelay(),
+      })),
+    [finalTransforms]
+  );
+
+  const startTimeRef = useRef<number | null>(null);
+  const doneRef = useRef(false);
+
+  useFrame((state) => {
+    const mesh = meshRef.current;
+    if (!mesh || doneRef.current) return;
+    const elapsed = state.clock.getElapsedTime();
+    if (startTimeRef.current === null) startTimeRef.current = elapsed;
+    const startTime = startTimeRef.current;
+
+    const matrix = new THREE.Matrix4();
+    const pos = new THREE.Vector3();
+    const scale = new THREE.Vector3(1, 1, 1);
+
+    finalTransforms.forEach(({ position, quaternion }, i) => {
+      const { offset, delay } = flightSeeds[i];
+      const t = assembleT(elapsed, startTime, delay);
+      const remaining = 1 - t;
+      pos.set(
+        position.x + offset.x * remaining,
+        position.y + offset.y * remaining,
+        position.z + offset.z * remaining
+      );
+      matrix.compose(pos, quaternion, scale);
+      mesh.setMatrixAt(i, matrix);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+
+    if (assembleFullyDone(elapsed, startTime)) doneRef.current = true;
+  });
 
   return (
     <instancedMesh ref={meshRef} args={[geometry, undefined, 9]} castShadow receiveShadow>

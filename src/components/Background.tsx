@@ -45,10 +45,10 @@ export function Background({ accentGlow = false }: BackgroundProps) {
   }, [mouseX, mouseY]);
 
   const baseGradient = isLight
-    ? "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(27,111,184,0.14), transparent 60%)," +
-      "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.12), transparent 60%)," +
-      "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(27,111,184,0.08), transparent 60%)," +
-      "linear-gradient(180deg, #fffdeb 0%, #f8f0dc 55%, #fffdeb 100%)"
+    ? "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.35), transparent 60%)," +
+      "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.10), transparent 60%)," +
+      "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(10,41,71,0.14), transparent 60%)," +
+      "linear-gradient(180deg, #e6eef4 0%, #5085a5 55%, #e6eef4 100%)"
     : "radial-gradient(ellipse 80% 60% at 20% 15%, rgba(59,130,246,0.20), transparent 60%)," +
       "radial-gradient(ellipse 70% 60% at 85% 20%, rgba(239,68,68,0.16), transparent 60%)," +
       "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(59,130,246,0.12), transparent 60%)," +
@@ -57,7 +57,7 @@ export function Background({ accentGlow = false }: BackgroundProps) {
   return (
     <div
       className={`pointer-events-none absolute inset-0 -z-10 overflow-hidden ${
-        isLight ? "bg-[#fffdeb]" : "bg-background"
+        isLight ? "bg-[#5085a5]" : "bg-background"
       }`}
     >
       {/* Base gradient mesh */}
