@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
@@ -11,27 +11,12 @@ interface LeaderPanelProps {
   onClose: () => void;
 }
 
-function subscribeToViewport(callback: () => void) {
-  const query = window.matchMedia("(max-width: 767px)");
-  query.addEventListener("change", callback);
-  return () => query.removeEventListener("change", callback);
-}
-
-function useIsMobile() {
-  return useSyncExternalStore(
-    subscribeToViewport,
-    () => window.matchMedia("(max-width: 767px)").matches,
-    () => false
-  );
-}
-
 /**
- * Detail panel for a leadership bio: a right-hand drawer on desktop, a
- * bottom sheet on mobile. Same interaction pattern as FeaturePanel, but
- * styled light to match the institutional-business page it lives on.
+ * Detail panel for a leadership bio: a centered modal, so reading a bio
+ * doesn't feel like navigating into a sub-page the way a slide-in drawer
+ * does — it's a focused overlay on top of the same section.
  */
 export function LeaderPanel({ leader, onClose }: LeaderPanelProps) {
-  const isMobile = useIsMobile();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
@@ -72,10 +57,6 @@ export function LeaderPanel({ leader, onClose }: LeaderPanelProps) {
     };
   }, [leader, onClose]);
 
-  const slideVariants = isMobile
-    ? { initial: { y: "100%" }, animate: { y: 0 }, exit: { y: "100%" } }
-    : { initial: { x: "100%" }, animate: { x: 0 }, exit: { x: "100%" } };
-
   return (
     <AnimatePresence>
       {leader && (
@@ -91,21 +72,20 @@ export function LeaderPanel({ leader, onClose }: LeaderPanelProps) {
             aria-hidden="true"
           />
 
-          <motion.div
-            key="panel"
-            ref={panelRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="leader-panel-title"
-            initial={slideVariants.initial}
-            animate={slideVariants.animate}
-            exit={slideVariants.exit}
-            transition={{ type: "spring", stiffness: 260, damping: 32 }}
-            className="fixed z-[70] flex flex-col overflow-y-auto no-scrollbar border-[var(--inst-border)]
-              bg-[var(--inst-card-bg)] text-[var(--inst-text)] shadow-2xl
-              inset-x-0 bottom-0 max-h-[88vh] rounded-t-3xl border-t
-              md:inset-y-0 md:right-0 md:left-auto md:h-full md:max-h-none md:w-full md:max-w-lg md:rounded-t-none md:rounded-l-3xl md:border-t-0 md:border-l"
-          >
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              key="panel"
+              ref={panelRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="leader-panel-title"
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 16 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="flex max-h-[88vh] w-full max-w-lg flex-col overflow-y-auto no-scrollbar rounded-3xl border border-[var(--inst-border)]
+                bg-[var(--inst-card-bg)] text-[var(--inst-text)] shadow-2xl"
+            >
             <div className="relative flex flex-col items-center border-b border-[var(--inst-border)] bg-gradient-to-b from-[var(--inst-card-alt-bg)] to-[var(--inst-card-bg)] px-6 pt-8 pb-6 text-center">
               <button
                 ref={closeButtonRef}
@@ -128,14 +108,15 @@ export function LeaderPanel({ leader, onClose }: LeaderPanelProps) {
               <p className="text-sm font-medium text-[var(--inst-primary)]">{leader?.title}</p>
             </div>
 
-            <div className="flex flex-1 flex-col gap-4 px-6 py-6">
-              {leader?.bio.map((paragraph, i) => (
-                <p key={i} className="leading-relaxed text-[var(--inst-text)]">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </motion.div>
+              <div className="flex flex-1 flex-col gap-4 px-6 py-6">
+                {leader?.bio.map((paragraph, i) => (
+                  <p key={i} className="leading-relaxed text-[var(--inst-text)]">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

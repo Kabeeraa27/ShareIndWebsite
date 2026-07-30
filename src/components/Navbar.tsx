@@ -3,15 +3,19 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
+import { SiteMenu } from "./SiteMenu";
 
 const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Offerings", href: "#offerings" },
-  { label: "Leadership", href: "#leadership" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/#about" },
+  { label: "Offerings", href: "/#offerings" },
+  { label: "Leadership", href: "/#leadership" },
+  { label: "Reports", href: "/reports" },
+  { label: "Team", href: "/team" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 /** Sticky, glassmorphic nav bar that stays transparent until the page scrolls. */
@@ -37,8 +41,8 @@ export function Navbar() {
         aria-label="Primary"
         className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10"
       >
-        <a
-          href="#home"
+        <Link
+          href="/"
           className="group flex items-center gap-2 text-lg font-semibold tracking-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
@@ -53,28 +57,30 @@ export function Navbar() {
             />
           </span>
           <span className="gradient-text">Share India Institutional Desk</span>
-        </a>
+        </Link>
 
-        <ul className="hidden items-center gap-8 md:flex">
+        <ul className="hidden items-center gap-5 xl:flex xl:gap-6">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <a
+              <Link
                 href={link.href}
                 className="text-sm text-white/75 transition-colors duration-200 hover:text-white"
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2 xl:flex">
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          <MagneticButton href="#get-started">Get Started</MagneticButton>
+          <SiteMenu />
+          <MagneticButton href="/#get-started">Get Started</MagneticButton>
         </div>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 xl:hidden">
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          <SiteMenu />
           <button
             type="button"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -92,23 +98,23 @@ export function Navbar() {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className="glass-strong overflow-hidden md:hidden"
+          className="glass-strong overflow-hidden xl:hidden"
         >
           <ul className="flex flex-col gap-1 px-6 py-4">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
-                <a
+                <Link
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className="block rounded-lg px-2 py-3 text-white/85 hover:bg-white/5 hover:text-white"
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
             <li className="mt-2 px-2">
               <a
-                href="#get-started"
+                href="/#get-started"
                 className="block rounded-full bg-gradient-to-r from-accent-blue to-accent-purple py-2 text-center text-sm font-medium"
               >
                 Get Started

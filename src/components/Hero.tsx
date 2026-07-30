@@ -1,12 +1,12 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Canvas } from "@react-three/fiber";
 import { motion } from "framer-motion";
 import { ArrowRight, MousePointerClick } from "lucide-react";
 import { Background } from "./Background";
 import { RubiksCube } from "./cube/RubiksCube";
-import { FeaturePanel } from "./FeaturePanel";
 import { features, type Feature } from "@/data/features";
 
 function useCubeScale() {
@@ -24,14 +24,25 @@ function useCubeScale() {
 }
 
 export function Hero() {
+  const router = useRouter();
   const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
   const [cubeHovering, setCubeHovering] = useState(false);
   const cubeScale = useCubeScale();
 
+  /** Clicking a tile no longer opens a slide-in drawer — it plays the
+   *  cube's focus/zoom animation (via selectedFeature -> CameraRig) and
+   *  then hands off to the feature's real page. */
+  const handleSelectFeature = (feature: Feature) => {
+    setSelectedFeature(feature);
+    window.setTimeout(() => {
+      router.push(feature.href ?? `/features/${feature.id}`);
+    }, 450);
+  };
+
   return (
     <section
       id="home"
-      className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-16"
+      className="relative isolate flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-16"
     >
       <Background accentGlow={cubeHovering} />
 
@@ -56,23 +67,25 @@ export function Hero() {
           SEBI-registered • Trusted by 2M+ investors
         </span>
         <h1
-          className="max-w-4xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl"
+          className="max-w-4xl text-4xl font-bold leading-[1.08] tracking-tight text-[var(--inst-heading)] sm:text-5xl lg:text-6xl"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Every tool you need to trade,
+          Share India
           <br />
-          <span className="gradient-text text-glow">solved in one cube.</span>
+          <span className="gradient-text text-glow">Institutional Business</span>
         </h1>
-        <p className="mt-5 max-w-xl text-base text-white/65 sm:text-lg">
-          Share India Institutional Desk brings your dashboard, analytics, AI research, and
-          security into a single interactive experience. Drag the cube. Explore a feature.
-          Start trading.
+        <p className="mt-5 max-w-xl text-base text-[var(--inst-text)] sm:text-lg">
+          Research based conviction meets precision execution.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
             href="#get-started"
-            className="glow-purple flex items-center gap-2 rounded-full bg-gradient-to-r from-accent-blue via-accent-purple to-accent-pink px-7 py-3 text-sm font-semibold text-white transition-transform duration-200 hover:scale-105"
+            className="flex items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold text-white shadow-lg transition-transform duration-200 hover:scale-105"
+            style={{
+              background: "linear-gradient(90deg, var(--inst-primary), var(--inst-accent))",
+              boxShadow: "0 8px 28px color-mix(in srgb, var(--inst-primary) 35%, transparent)",
+            }}
           >
             Get Started Free
             <ArrowRight size={16} />
@@ -103,7 +116,7 @@ export function Hero() {
             <group scale={cubeScale}>
               <RubiksCube
                 selectedFeature={selectedFeature}
-                onSelectFeature={setSelectedFeature}
+                onSelectFeature={handleSelectFeature}
                 onHoverChange={setCubeHovering}
                 cubeScale={cubeScale}
               />
@@ -112,7 +125,7 @@ export function Hero() {
         </Canvas>
 
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-2 flex items-center justify-center gap-2 text-xs text-white/40"
+          className="pointer-events-none absolute inset-x-0 bottom-2 flex items-center justify-center gap-2 text-xs text-[var(--inst-text-muted)]"
           aria-hidden="true"
         >
           <MousePointerClick size={14} />
@@ -129,15 +142,13 @@ export function Hero() {
           <button
             key={feature.id}
             type="button"
-            onClick={() => setSelectedFeature(feature)}
+            onClick={() => handleSelectFeature(feature)}
             className="rounded-lg border border-white/15 px-3 py-2 text-sm text-white/85 hover:bg-white/10"
           >
             {feature.name}
           </button>
         ))}
       </nav>
-
-      <FeaturePanel feature={selectedFeature} onClose={() => setSelectedFeature(null)} />
     </section>
   );
 }

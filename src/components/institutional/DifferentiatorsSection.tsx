@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { DIFFERENTIATORS, DIFFERENTIATORS_TAGLINE } from "@/data/institutional";
 
-const ACCENTS = ["#0082c6", "#4da6d9", "#005a8c", "#ed3237", "#0082c6", "#4da6d9", "#005a8c", "#ed3237"];
+const ACCENTS = ["#1b6fb8", "#4fa3d1", "#0a2947", "#ce2626", "#1b6fb8", "#4fa3d1", "#0a2947", "#ce2626"];
 
 export function DifferentiatorsSection() {
   return (

@@ -2,23 +2,22 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { InstitutionalThemeScope } from "@/components/InstitutionalThemeScope";
-import { ReportsHero } from "@/components/reports/ReportsHero";
-import { ReportsDashboard } from "@/components/reports/ReportsDashboard";
+import { TeamHero } from "@/components/team/TeamHero";
+import { TeamGrid } from "@/components/team/TeamGrid";
 
 export const metadata: Metadata = {
-  title: "Research Reports | Share India Institutional Desk",
-  description:
-    "Browse institutional-grade sector research by sector, category, and date — every report the desk publishes, organized in one dashboard.",
+  title: "Our Team | Share India Institutional Desk",
+  description: "Meet the sector analysts behind Share India Institutional Desk's research.",
 };
 
-export default function ReportsPage() {
+export default function TeamPage() {
   return (
     <div className="flex min-h-screen flex-1 flex-col bg-background">
       <Navbar />
       <main className="flex-1">
         <InstitutionalThemeScope>
-          <ReportsHero />
-          <ReportsDashboard />
+          <TeamHero />
+          <TeamGrid />
         </InstitutionalThemeScope>
       </main>
       <Footer />

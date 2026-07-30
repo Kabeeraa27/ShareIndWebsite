@@ -65,7 +65,7 @@ export const SERVICES: InstitutionalService[] = [
     id: "research",
     name: "Research",
     icon: LineChart,
-    color: "#0082c6",
+    color: "#1b6fb8",
     description: "Distinctive, niche investment ideas driven by bottom-up strategies.",
     points: [
       "Distinctive, niche investment ideas driven by bottom-up strategies",
@@ -78,7 +78,7 @@ export const SERVICES: InstitutionalService[] = [
     id: "sales",
     name: "Sales",
     icon: Users2,
-    color: "#4da6d9",
+    color: "#4fa3d1",
     description: "A single point of contact model built on research-driven relationships.",
     points: [
       "Single point of contact model",
@@ -91,7 +91,7 @@ export const SERVICES: InstitutionalService[] = [
     id: "dealing",
     name: "Dealing",
     icon: BarChart3,
-    color: "#ed3237",
+    color: "#ce2626",
     description: "Low-impact execution across cash and derivatives, built for scale and speed.",
     points: [
       "Low-impact execution (cash & derivatives)",
@@ -106,7 +106,7 @@ export const SERVICES: InstitutionalService[] = [
     id: "corporate-access",
     name: "Corporate Access",
     icon: Radar,
-    color: "#7fc4ea",
+    color: "#a9c9dc",
     description: "A proactive, well-connected team that opens direct lines to management.",
     points: [
       "Corporate roadshows and reverse roadshows",
@@ -118,7 +118,7 @@ export const SERVICES: InstitutionalService[] = [
     id: "operations",
     name: "Operations",
     icon: ShieldCheck,
-    color: "#005a8c",
+    color: "#0a2947",
     description: "A strong risk framework behind every trade, from reporting to reconciliation.",
     points: [
       "Strong risk management framework",
@@ -163,7 +163,7 @@ export const LEADERSHIP: Leader[] = [
     id: "kalpesh-parekh",
     name: "Mr Kalpesh Parekh",
     title: "Head – Institutional Business",
-    image: "/kalpesh-parekh.png",
+    image: "/people/kalpesh-parekh.png",
     bio: [
       "Mr Kalpesh Parekh brings over 23 years of rich experience in the Indian capital markets. A Chartered Accountant by qualification, he has played multiple leadership roles across top-tier financial institutions. He has worked with reputed organisations like CLSA, DAIWA, IDFC, PL, Elara and ASK.",
       "At Share India, Mr Parekh serves as the Head of Equities – Institutional Desk overseeing the company's strategy for engaging with domestic and global institutional investors. Known for his analytical depth, calm leadership, and ability to foster high-performance teams, Mr Parekh plays a vital role in elevating the company's profile among mutual funds, PMS houses, and foreign institutional clients.",
@@ -174,7 +174,7 @@ export const LEADERSHIP: Leader[] = [
     id: "himani-shah",
     name: "Ms Himani Shah",
     title: "Co-Head – Institutional Business",
-    image: "/himani-shah.png",
+    image: "/people/himani-shah.png",
     bio: [
       "Ms. Himani Shah brings nearly two decades of experience in the capital markets and has been an integral part of Share India's growth journey. A Chartered Accountant by qualification, she has played a key role in strengthening the firm's trading and operations ecosystem while actively contributing to business development across multiple segments.",
       "Over the years, she has built and mentored trading teams, expanded new business segments, and overseen operations, risk management, and the overall functioning of the Mumbai division. With strong market insight and deep expertise in algo trading, she combines strategy, execution, and team leadership to drive growth and operational excellence within the organisation.",
@@ -185,9 +185,6 @@ export const LEADERSHIP: Leader[] = [
 export const LEADERSHIP_TAGLINE = "Driven by Experience. Defined by Insight";
 export const LEADERSHIP_INTRO =
   "Our leadership team brings decades of combined experience across institutional research, sales, and trading. Their deep understanding of market cycles and corporate dynamics defines Share India's institutional edge.";
-
-export const COMPLIANCE_TEXT =
-  "Share India adheres to all applicable regulatory guidelines and maintains the highest standards of transparency, governance, and ethical conduct. Our disclosures are regularly updated to ensure accuracy, accountability, and alignment with SEBI and other statutory requirements, reinforcing trust with our institutional stakeholders.";
 
 export const CORPORATE_OFFICE = {
   name: "Share India Securities Ltd.",

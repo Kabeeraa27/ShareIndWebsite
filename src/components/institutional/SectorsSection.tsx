@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { SECTORS } from "@/data/institutional";
 
-const ACCENTS = ["#0082c6", "#4da6d9", "#7fc4ea", "#005a8c", "#ed3237"];
+const ACCENTS = ["#1b6fb8", "#4fa3d1", "#a9c9dc", "#0a2947", "#ce2626"];
 
 export function SectorsSection() {
   return (

@@ -13,19 +13,31 @@ interface Particle {
   color: string;
 }
 
-const COLORS = ["#3b82f6", "#a855f7", "#22d3ee", "#ec4899", "#ffffff"];
+const DARK_COLORS = ["#3b82f6", "#ef4444", "#22d3ee", "#60a5fa", "#ffffff"];
+const LIGHT_COLORS = ["#1b6fb8", "#ce2626", "#0a2947", "#4fa3d1"];
 const PARTICLE_COUNT = 70;
 
+interface ParticlesProps {
+  /** Dark uses bright specks on black; light swaps to the brand's navy/blue/red
+   *  so the same ambient field reads on a cream background instead of vanishing. */
+  theme?: "light" | "dark";
+}
+
 /** Cheap canvas-based ambient particle field drifting behind the hero content. */
-export function Particles() {
+export function Particles({ theme = "dark" }: ParticlesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reducedMotion = usePrefersReducedMotion();
+  const isLight = theme === "light";
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    const colors = isLight ? LIGHT_COLORS : DARK_COLORS;
+    const baseAlpha = isLight ? 0.12 : 0.15;
+    const twinkleAlpha = isLight ? 0.22 : 0.35;
 
     let width = 0;
     let height = 0;
@@ -40,7 +52,7 @@ export function Particles() {
         speedY: Math.random() * 0.18 + 0.04,
         drift: Math.random() * 0.6 - 0.3,
         phase: Math.random() * Math.PI * 2,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        color: colors[Math.floor(Math.random() * colors.length)],
       }));
     };
 
@@ -69,7 +81,7 @@ export function Particles() {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = 0.15 + twinkle * 0.35;
+        ctx.globalAlpha = baseAlpha + twinkle * twinkleAlpha;
         ctx.fill();
 
         if (!reducedMotion) {
@@ -94,7 +106,7 @@ export function Particles() {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(raf);
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, isLight]);
 
   return (
     <canvas

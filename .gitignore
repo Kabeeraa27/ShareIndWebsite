@@ -39,6 +39,11 @@ yarn-error.log*
 # playwright screenshots
 /shots
 
+# source spreadsheet with employee contact info (phone numbers) — already
+# fully extracted into src/data/team.ts and public/people/; no need to keep
+# it in version control
+Copy of Analyst Names*.xlsx
+
 # personal/local Claude Code overrides (not shared project config)
 .claude/settings.local.json
 

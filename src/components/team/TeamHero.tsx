@@ -4,10 +4,7 @@ import { motion } from "framer-motion";
 import { Background } from "@/components/Background";
 import { BackToHome } from "@/components/BackToHome";
 
-/** Dark banner matching the cube hero's look, so navigating here from the
- *  homepage doesn't feel like landing on a different site — then blends
- *  into the light folder-cabinet content below. */
-export function ReportsHero() {
+export function TeamHero() {
   return (
     <section className="relative isolate flex min-h-[40vh] w-full flex-col items-center justify-center overflow-hidden bg-background px-6 pt-28 pb-12 text-center">
       <Background />
@@ -26,16 +23,16 @@ export function ReportsHero() {
         className="relative z-10 flex flex-col items-center"
       >
         <span className="glass mb-5 rounded-full px-4 py-1.5 text-xs font-medium tracking-wide text-white/70">
-          Research Reports
+          Our Team
         </span>
         <h1
           className="max-w-2xl text-4xl font-bold leading-[1.08] tracking-tight text-[var(--inst-heading)] sm:text-5xl"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Every sector, <span className="gradient-text text-glow">one file away</span>
+          The analysts <span className="gradient-text text-glow">behind the research</span>
         </h1>
         <p className="mt-5 max-w-xl text-base text-[var(--inst-text)] sm:text-lg">
-          Pick a folder. Open a file. Get straight to the research that moves your portfolio.
+          Sector specialists who read the filings, build the models, and make the call.
         </p>
       </motion.div>
     </section>
