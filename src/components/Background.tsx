@@ -2,12 +2,18 @@
 
 import { useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Aurora } from "./Aurora";
 import { Particles } from "./Particles";
 import { useTheme } from "./ThemeProvider";
 
 interface BackgroundProps {
   /** Nudges the ambient glow toward a hovered tile's accent color. */
   accentGlow?: boolean;
+  /** Layers the drifting blue "aurora borealis" ribbons in above the base
+   *  gradient — opt-in, scoped to the homepage hero rather than every
+   *  banner that reuses this backdrop. Adapts its blend mode to the
+   *  current light/dark theme (see Aurora). */
+  aurora?: boolean;
 }
 
 /**
@@ -17,7 +23,7 @@ interface BackgroundProps {
  * cream/blue/red institutional palette, so the cube doesn't sit in a stray
  * dark box once the rest of the page has gone light.
  */
-export function Background({ accentGlow = false }: BackgroundProps) {
+export function Background({ accentGlow = false, aurora = false }: BackgroundProps) {
   const { theme } = useTheme();
   const isLight = theme === "light";
 
@@ -49,10 +55,15 @@ export function Background({ accentGlow = false }: BackgroundProps) {
       "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.10), transparent 60%)," +
       "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(10,41,71,0.14), transparent 60%)," +
       "linear-gradient(180deg, #e6eef4 0%, #5085a5 55%, #e6eef4 100%)"
-    : "radial-gradient(ellipse 80% 60% at 20% 15%, rgba(59,130,246,0.20), transparent 60%)," +
+    : "radial-gradient(ellipse 80% 60% at 20% 15%, rgba(84,169,212,0.20), transparent 60%)," +
       "radial-gradient(ellipse 70% 60% at 85% 20%, rgba(239,68,68,0.16), transparent 60%)," +
-      "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(59,130,246,0.12), transparent 60%)," +
-      "linear-gradient(180deg, #050816 0%, #070b1e 55%, #050816 100%)";
+      "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(84,169,212,0.12), transparent 60%)," +
+      // Aurora banners go a shade deeper than the standard dark theme — a
+      // near-black sky makes the ribbons read as a genuine night-sky glow
+      // instead of a tinted haze.
+      (aurora
+        ? "linear-gradient(180deg, #020308 0%, #04060f 55%, #020308 100%)"
+        : "linear-gradient(180deg, #050816 0%, #070b1e 55%, #050816 100%)");
 
   return (
     <div
@@ -62,6 +73,10 @@ export function Background({ accentGlow = false }: BackgroundProps) {
     >
       {/* Base gradient mesh */}
       <div className="absolute inset-0" style={{ background: baseGradient }} />
+
+      {/* Aurora borealis ribbons — opt-in per banner, adapts its blend mode
+          per theme so it stays bright rather than washing out. */}
+      {aurora && <Aurora isLight={isLight} />}
 
       {/* Blurred glow orbs, drifting via parallax layers */}
       <motion.div

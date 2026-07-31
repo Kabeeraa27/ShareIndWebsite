@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { InstitutionalThemeScope } from "@/components/InstitutionalThemeScope";
+import { LeadershipSection } from "@/components/institutional/LeadershipSection";
 import { TeamHero } from "@/components/team/TeamHero";
 import { TeamGrid } from "@/components/team/TeamGrid";
 
@@ -17,6 +18,7 @@ export default function TeamPage() {
       <main className="flex-1">
         <InstitutionalThemeScope>
           <TeamHero />
+          <LeadershipSection />
           <TeamGrid />
         </InstitutionalThemeScope>
       </main>

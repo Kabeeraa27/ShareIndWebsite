@@ -104,7 +104,7 @@ export const features: Feature[] = [
     icon: Users2,
     color: NAVY,
     glowColor: NAVY_GLOW,
-    href: "/leadership",
+    href: "/team",
   },
   {
     id: "our-team",
@@ -119,9 +119,9 @@ export const features: Feature[] = [
       "Decades of combined market experience",
     ],
     icon: IdCard,
-    color: "#3b82f6",
+    color: "#54a9d4",
     href: "/team",
-    glowColor: "rgba(59,130,246,0.65)",
+    glowColor: "rgba(84,169,212,0.65)",
   },
   {
     id: "offerings",

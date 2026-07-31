@@ -5,6 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
+import { INTRO_SPIN_DELAY_MS, INTRO_SPIN_DURATION_MS } from "@/lib/cubeIntro";
 
 const DRAG_ROTATION_SPEED = Math.PI * 1.6; // radians per full viewport width dragged
 const DRAG_CLICK_THRESHOLD = 10; // px of movement before a drag suppresses a click
@@ -35,6 +36,7 @@ export function useCubeRotation() {
   const momentumActive = useRef(false);
   const snapTween = useRef<gsap.core.Tween | null>(null);
   const focusTween = useRef<gsap.core.Tween | null>(null);
+  const introTween = useRef<gsap.core.Tween | null>(null);
   const isFocusedRef = useRef(false);
 
   const snapToNearestAxis = useCallback(() => {
@@ -54,6 +56,28 @@ export function useCubeRotation() {
       ease: "power3.out",
       onUpdate: () => group.quaternion.slerpQuaternions(startQuat, targetQuat, proxy.t),
     });
+  }, [reducedMotion]);
+
+  // A one-time flourish once the cube has finished assembling: a full turn
+  // around the Y axis, easing in and back out, then snapped back to 0 so
+  // the front face is exactly where drag/click hit-testing expects it.
+  // Skipped if the user has already grabbed the cube (see onPointerDown,
+  // which kills this tween) or asked for reduced motion.
+  useEffect(() => {
+    if (reducedMotion) return;
+    const timer = window.setTimeout(() => {
+      const group = groupRef.current;
+      if (!group || drag.current.isDragging || isFocusedRef.current) return;
+      introTween.current = gsap.to(group.rotation, {
+        y: Math.PI * 2,
+        duration: INTRO_SPIN_DURATION_MS / 1000,
+        ease: "power2.inOut",
+        onComplete: () => {
+          group.rotation.y = 0;
+        },
+      });
+    }, INTRO_SPIN_DELAY_MS);
+    return () => window.clearTimeout(timer);
   }, [reducedMotion]);
 
   const endDrag = useCallback(() => {
@@ -117,6 +141,7 @@ export function useCubeRotation() {
       wasDraggingRef.current = false;
       momentumActive.current = false;
       snapTween.current?.kill();
+      introTween.current?.kill();
     };
 
     const onPointerMove = (e: PointerEvent) => {
@@ -180,6 +205,7 @@ export function useCubeRotation() {
         isFocusedRef.current = true;
         momentumActive.current = false;
         snapTween.current?.kill();
+        introTween.current?.kill();
 
         const localNormal = new THREE.Vector3(0, 0, 1);
         const currentWorldNormal = localNormal.clone().applyQuaternion(group.quaternion).normalize();

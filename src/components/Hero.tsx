@@ -1,13 +1,123 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Canvas } from "@react-three/fiber";
-import { motion } from "framer-motion";
-import { ArrowRight, MousePointerClick } from "lucide-react";
+import dynamic from "next/dynamic";
+import { AnimatePresence, motion } from "framer-motion";
+import { MousePointerClick } from "lucide-react";
 import { Background } from "./Background";
-import { RubiksCube } from "./cube/RubiksCube";
 import { features, type Feature } from "@/data/features";
+
+/** The hero's small "modular" pitch, one module per cube face — swapped in
+ *  for the old tagline/CTA row. Colors mirror the cube's own accent palette
+ *  (blue/purple/pink/cyan) so each module reads as its own "face". */
+const CUBE_MODULES = [
+  {
+    title: "Execution Edge",
+    description: "Seamless trading across NSE, BSE, and MCX with technology-driven speed.",
+    color: "var(--color-accent-blue)",
+  },
+  {
+    title: "Research Depth",
+    description: "Unlocking opportunities in mid & small caps with sharp fundamental and technical insights.",
+    color: "var(--color-accent-purple)",
+  },
+  {
+    title: "Corporate Access",
+    description: "Connecting investors and corporates through roadshows and strategic interactions.",
+    color: "var(--color-accent-pink)",
+  },
+  {
+    title: "Innovation Core",
+    description: "Powered by uTrade & Algowire for algo-driven, low-latency trading.",
+    color: "var(--color-accent-cyan)",
+  },
+];
+
+/** A slim, auto-advancing label ticker rather than a grid of cards — one
+ *  label lit at a time with its description crossfading beneath, cycling
+ *  through the cube's four "faces" instead of dumping all four at once. */
+function CubePossibilities() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setActive((current) => (current + 1) % CUBE_MODULES.length);
+    }, 3400);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+      className="relative z-10 mb-2 w-full max-w-2xl text-center"
+    >
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-accent-cyan)] sm:text-sm">
+        The Cube of Possibilities
+      </p>
+      <p className="mx-auto mt-2 max-w-xl text-xs text-[var(--inst-text-muted)] sm:text-sm">
+        Like a Rubik&apos;s Cube, our institutional business is built on precision, agility, and
+        multidimensional solutions.
+      </p>
+
+      <div className="no-scrollbar mx-auto mt-5 flex max-w-xl items-center justify-center gap-3 overflow-x-auto whitespace-nowrap px-2 sm:gap-5">
+        {CUBE_MODULES.map((module, i) => {
+          const isActive = i === active;
+          return (
+            <button
+              key={module.title}
+              type="button"
+              onClick={() => setActive(i)}
+              className="group flex shrink-0 flex-col items-center gap-1.5"
+            >
+              <span
+                className="text-[9.5px] font-semibold uppercase tracking-wide transition-all duration-300 sm:text-xs"
+                style={{ color: module.color, opacity: isActive ? 1 : 0.45 }}
+              >
+                {module.title}
+              </span>
+              <span
+                className="h-[2px] rounded-full transition-all duration-300"
+                style={{
+                  width: isActive ? "100%" : "0%",
+                  background: module.color,
+                }}
+              />
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="relative mx-auto mt-4 min-h-[2.75rem] max-w-lg sm:min-h-[1.5rem]">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={active}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-x-0 top-0 text-xs text-[var(--inst-text-muted)] sm:text-sm"
+          >
+            {CUBE_MODULES[active].description}
+          </motion.p>
+        </AnimatePresence>
+      </div>
+
+      <p className="mx-auto mt-6 max-w-xl text-[10.5px] italic text-[var(--inst-text-muted)] sm:mt-8 sm:text-xs">
+        Every face of the cube represents a strength — together forming a complete solution for
+        institutional investors.
+      </p>
+    </motion.div>
+  );
+}
+
+/** Deferred to its own client bundle — see CubeCanvas for why. Renders
+ *  nothing until mounted, so the hero's text/CTAs paint immediately. */
+const CubeCanvas = dynamic(() => import("./cube/CubeCanvas").then((m) => m.CubeCanvas), {
+  ssr: false,
+});
 
 function useCubeScale() {
   const [scale, setScale] = useState(1);
@@ -44,7 +154,7 @@ export function Hero() {
       id="home"
       className="relative isolate flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-16"
     >
-      <Background accentGlow={cubeHovering} />
+      <Background accentGlow={cubeHovering} aurora />
 
       {/* Blends the dark hero into the light institutional sections below,
           instead of a hard cut between the two themes. Kept shallow and
@@ -74,30 +184,9 @@ export function Hero() {
           <br />
           <span className="gradient-text text-glow">Institutional Business</span>
         </h1>
-        <p className="mt-5 max-w-xl text-base text-[var(--inst-text)] sm:text-lg">
-          Research based conviction meets precision execution.
-        </p>
-
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <a
-            href="#get-started"
-            className="flex items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold text-white shadow-lg transition-transform duration-200 hover:scale-105"
-            style={{
-              background: "linear-gradient(90deg, var(--inst-primary), var(--inst-accent))",
-              boxShadow: "0 8px 28px color-mix(in srgb, var(--inst-primary) 35%, transparent)",
-            }}
-          >
-            Get Started Free
-            <ArrowRight size={16} />
-          </a>
-          <a
-            href="/offerings"
-            className="glass rounded-full px-7 py-3 text-sm font-medium text-white/85 transition-colors duration-200 hover:text-white"
-          >
-            Explore Offerings
-          </a>
-        </div>
       </motion.div>
+
+      <CubePossibilities />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
@@ -105,24 +194,12 @@ export function Hero() {
         transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         className="relative z-10 mt-4 h-[420px] w-full max-w-3xl sm:h-[480px] lg:h-[560px]"
       >
-        <Canvas
-          shadows
-          dpr={[1, 1.5]}
-          camera={{ position: [0, 0, 6.4], fov: 45, near: 0.1, far: 100 }}
-          style={{ touchAction: "none" }}
-          gl={{ antialias: true, alpha: true }}
-        >
-          <Suspense fallback={null}>
-            <group scale={cubeScale}>
-              <RubiksCube
-                selectedFeature={selectedFeature}
-                onSelectFeature={handleSelectFeature}
-                onHoverChange={setCubeHovering}
-                cubeScale={cubeScale}
-              />
-            </group>
-          </Suspense>
-        </Canvas>
+        <CubeCanvas
+          selectedFeature={selectedFeature}
+          onSelectFeature={handleSelectFeature}
+          onHoverChange={setCubeHovering}
+          cubeScale={cubeScale}
+        />
 
         <div
           className="pointer-events-none absolute inset-x-0 bottom-2 flex items-center justify-center gap-2 text-xs text-[var(--inst-text-muted)]"

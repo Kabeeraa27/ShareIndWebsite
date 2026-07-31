@@ -12,7 +12,6 @@ const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Offerings", href: "/offerings" },
-  { label: "Leadership", href: "/leadership" },
   { label: "Reports", href: "/reports" },
   { label: "Team", href: "/team" },
   { label: "Contact", href: "/contact" },
@@ -56,7 +55,14 @@ export function Navbar() {
               className="h-full w-full object-contain"
             />
           </span>
-          <span className="gradient-text">Share India Institutional Desk</span>
+          {/* Full brand name wraps to two lines on narrow screens, which
+              bloats the fixed navbar's height and lets it collide with
+              content below (see FileCard) — a shorter label below `sm`
+              keeps the bar a single, predictable line on mobile. */}
+          <span className="gradient-text whitespace-nowrap">
+            <span className="hidden sm:inline">Share India Institutional Desk</span>
+            <span className="sm:hidden">Share India</span>
+          </span>
         </Link>
 
         <ul className="hidden items-center gap-5 xl:flex xl:gap-6">

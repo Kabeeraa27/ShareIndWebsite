@@ -13,7 +13,7 @@ interface Particle {
   color: string;
 }
 
-const DARK_COLORS = ["#3b82f6", "#ef4444", "#22d3ee", "#60a5fa", "#ffffff"];
+const DARK_COLORS = ["#54a9d4", "#ef4444", "#22d3ee", "#60a5fa", "#ffffff"];
 const LIGHT_COLORS = ["#1b6fb8", "#ce2626", "#0a2947", "#4fa3d1"];
 const PARTICLE_COUNT = 70;
 

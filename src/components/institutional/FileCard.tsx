@@ -46,12 +46,18 @@ export function FileCard({ index, total, label, color, scrollYProgress, children
     // visible beneath it. pointer-events-auto below re-enables it only on
     // the card's own (correctly positioned) content box.
     <div
-      className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 pt-16 pb-10 sm:px-8"
+      // Anchored to the top (not vertically centered) below `sm` — on a
+      // short mobile viewport, centering a card taller than the available
+      // space pushes its top edge up underneath the fixed Navbar, hiding
+      // content with no way to scroll back up to it (the pinned FileStack
+      // owns page scroll). Centering is safe again from `sm` up, where the
+      // desktop nav is a single line and cards reliably fit.
+      className="pointer-events-none absolute inset-0 flex items-start justify-center overflow-hidden px-4 pt-24 pb-6 sm:items-center sm:px-8 sm:pt-16 sm:pb-10"
       style={{ zIndex: total - index }}
     >
       <motion.div
         style={{ scale, y, rotate }}
-        className="pointer-events-auto flex w-[min(94vw,1200px)] flex-col"
+        className="pointer-events-auto flex max-h-full w-[min(94vw,1200px)] flex-col"
       >
         {/* Folder tab — a small rectangle protruding from the file's top-left edge. */}
         <div
@@ -61,9 +67,12 @@ export function FileCard({ index, total, label, color, scrollYProgress, children
           <span className="opacity-75">{String(index + 1).padStart(2, "0")}</span>
           {label}
         </div>
-        {/* The file body — sized to its own content, never scrolls internally. */}
+        {/* The file body sizes to its own content on desktop, where cards
+            reliably fit the viewport. On mobile it can be taller than the
+            space available, so it scrolls internally instead of clipping
+            unreachable content top or bottom. */}
         <div
-          className="overflow-hidden rounded-b-2xl rounded-tr-2xl border shadow-[0_25px_60px_-20px_rgba(10,41,71,0.35)]"
+          className="overflow-y-auto overscroll-contain rounded-b-2xl rounded-tr-2xl border shadow-[0_25px_60px_-20px_rgba(10,41,71,0.35)] sm:overflow-hidden"
           style={{ borderColor: `${color}33`, background: "var(--inst-bg)" }}
         >
           {children}

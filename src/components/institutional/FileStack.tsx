@@ -24,8 +24,8 @@ export function FileStack({ files }: { files: FileDef[] }) {
   const total = files.length;
 
   return (
-    <div ref={ref} className="relative" style={{ height: `${total * 100}vh` }}>
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-[var(--inst-bg)]">
+    <div ref={ref} className="relative" style={{ height: `${total * 100}dvh` }}>
+      <div className="sticky top-0 h-dvh w-full overflow-hidden bg-[var(--inst-bg)]">
         {files.map(({ label, color, Section }, i) => (
           <FileCard key={label} index={i} total={total} label={label} color={color} scrollYProgress={scrollYProgress}>
             <Section />
