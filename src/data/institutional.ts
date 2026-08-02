@@ -81,10 +81,10 @@ export const SERVICES: InstitutionalService[] = [
     color: "#4fa3d1",
     description: "A single point of contact model built on research-driven relationships.",
     points: [
-      "Single point of contact model",
-      "Research-driven team approach",
-      "Partnerships with domestic & global investors",
-      "Market intelligence and corporate access",
+      "Single point of contact enabling seamless engagement and faster decision-making",
+      "Research-driven team with deep understanding of client requirements",
+      "Partners closely with leading domestic and global investors",
+      "Tailored research flow, sharp market intelligence, and direct access to corporates and sector experts",
     ],
   },
   {
@@ -94,12 +94,13 @@ export const SERVICES: InstitutionalService[] = [
     color: "#ce2626",
     description: "Low-impact execution across cash and derivatives, built for scale and speed.",
     points: [
-      "Low-impact execution (cash & derivatives)",
-      "ETF market making",
+      "Comprehensive, low impact execution in cash and derivatives, ETF market making",
       "Advanced algorithmic suite",
-      "Block-trade capabilities",
-      "DMA and low-latency trading",
-      "Cash-futures arbitrage & options strategy support",
+      "Strong block-trade capabilities",
+      "Seamless large and complex ETF basket orders execution",
+      "DMA (Direct Market Access), low-latency trading",
+      "Cash-Futures arbitrage and options strategies",
+      "Colocation and infrastructure support",
     ],
   },
   {
@@ -109,9 +110,10 @@ export const SERVICES: InstitutionalService[] = [
     color: "#a9c9dc",
     description: "A proactive, well-connected team that opens direct lines to management.",
     points: [
-      "Corporate roadshows and reverse roadshows",
-      "Plant and site visits",
-      "Sector-focused conferences",
+      "A proactive, well-connected team facilitating direct and seamless engagement",
+      "High-quality corporate roadshows and reverse roadshows, with a strong focus on the small-cap space",
+      "Plant and site visits offering on-ground operational insights",
+      "Thematic, sector-focused conferences bringing together corporates, experts, and long-term investors",
     ],
   },
   {
@@ -121,10 +123,9 @@ export const SERVICES: InstitutionalService[] = [
     color: "#0a2947",
     description: "A strong risk framework behind every trade, from reporting to reconciliation.",
     points: [
-      "Strong risk management framework",
-      "Multi-format reporting",
-      "Timely file delivery",
-      "Efficient reconciliation processes",
+      "Strong Risk Management Framework",
+      "Clean, easy-to-use reports delivered in multiple formats for seamless analysis",
+      "Timely delivery of day-to-day files, enabling smooth and efficient reconciliation processes",
     ],
   },
 ];
