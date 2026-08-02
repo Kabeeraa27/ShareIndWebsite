@@ -1,95 +1,119 @@
 import Image from "next/image";
-import { Mail, Phone, QrCode } from "lucide-react";
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaYoutube,
-  FaLinkedinIn,
-  FaXTwitter,
-  FaGooglePlay,
-  FaApple,
-} from "react-icons/fa6";
+import { Mail, Phone } from "lucide-react";
+import { FaFacebookF, FaInstagram, FaYoutube, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 
 const SOCIALS = [
-  { icon: FaFacebookF, label: "Facebook" },
-  { icon: FaInstagram, label: "Instagram" },
-  { icon: FaYoutube, label: "YouTube" },
-  { icon: FaLinkedinIn, label: "LinkedIn" },
-  { icon: FaXTwitter, label: "X" },
+  { icon: FaFacebookF, label: "Facebook", href: "https://www.facebook.com/people/Share-India/100063991871591/" },
+  { icon: FaInstagram, label: "Instagram", href: "https://www.instagram.com/shareindiasecuritieslimited/" },
+  { icon: FaYoutube, label: "YouTube", href: "https://www.youtube.com/c/shareindiasecurities" },
+  { icon: FaLinkedinIn, label: "LinkedIn", href: "https://www.linkedin.com/company/share-india-securities" },
+  { icon: FaXTwitter, label: "X", href: "https://x.com/shareindiasec" },
 ];
 
-const KEY_LINKS = [
-  "Share India Algos Login",
-  "Margin Trading Facility Activation (MTF)",
-  "Apply IPO",
-  "F&O Activation",
-  "Migration",
-  "Nominee Addition",
-  "Payment Withdrawal",
-  "Unpledge Holdings",
-  "Approved Collateral List",
-  "Downloads",
+interface FooterLink {
+  label: string;
+  href: string;
+}
+
+// Real destinations live on the main corporate site (shareindia.com), not
+// this institutional-desk sub-site, so relative paths from there are
+// resolved to absolute shareindia.com URLs here.
+const KEY_LINKS: FooterLink[] = [
+  { label: "Share India Algos Login", href: "https://login.utradealgos.com/" },
+  { label: "Margin Trading Facility Activation (MTF)", href: "https://rekyc.shareindia.com/forms/mtf" },
+  { label: "Apply IPO", href: "https://ipo.shareindia.com/ipo" },
+  { label: "F&O Activation", href: "https://rekyc.shareindia.com/forms/fno" },
+  { label: "Migration", href: "https://rekyc.shareindia.com/forms/migration" },
+  { label: "Nominee Addition", href: "https://rekyc.shareindia.com/forms/nominee" },
+  { label: "Payment Withdrawal", href: "https://rekyc.shareindia.com/forms/payment-withdrawal" },
+  { label: "Unpledge Holdings", href: "https://rekyc.shareindia.com/forms/unpledge/holdings" },
+  {
+    label: "Approved Collateral List",
+    href: "https://docs.google.com/spreadsheets/d/168evSVnYfWKWpCUGFwcWoBjctG6omXtfsH0Mw7T0pnY/edit?gid=0#gid=0",
+  },
+  { label: "Downloads", href: "https://www.shareindia.com/downloads" },
 ];
 
-const QUICK_LINKS = [
-  "About Us",
-  "Footprints",
-  "Investor Relations",
-  "Fraud Awareness",
-  "Privacy Policy",
-  "Terms of Use",
-  "Disclaimer",
-  "Refund Policy",
-  "Inquiries",
-  "News Room",
-  "Blogs",
-  "Research",
-  "Careers",
-  "Employee Corner",
-  "Advisory - KYC Compliance",
-  "Advisory for Investors",
-  "Client's Corner",
-  "Investors Corner",
-  "Contact Us",
+const QUICK_LINKS: FooterLink[] = [
+  { label: "About Us", href: "https://www.shareindia.com/about-us" },
+  { label: "Footprints", href: "https://www.shareindia.com/about-us/footprints" },
+  { label: "Investor Relations", href: "https://www.shareindia.com/about-us/investor-relations" },
+  { label: "Fraud Awareness", href: "https://www.shareindia.com/cyber-fraud-alert" },
+  { label: "Privacy Policy", href: "https://www.shareindia.com/privacy-policy" },
+  { label: "Terms of Use", href: "https://www.shareindia.com/terms-of-use" },
+  { label: "Disclaimer", href: "https://www.shareindia.com/disclaimer" },
+  { label: "Refund Policy", href: "https://www.shareindia.com/refund-policy" },
+  { label: "Inquiries", href: "https://www.shareindia.com/inquiries" },
+  { label: "News Room", href: "https://www.shareindia.com/about-us/newsroom" },
+  { label: "Blogs", href: "https://www.shareindia.com/knowledge-center" },
+  { label: "Research", href: "https://www.shareindia.com/about-us/research" },
+  { label: "CDSL E Voting", href: "https://evoting.cdslindia.com/Evoting/EvotingLogin" },
+  { label: "Careers", href: "https://www.shareindia.com/about-us/careers" },
+  { label: "Employee Corner", href: "https://www.shareindia.com/employee-corner" },
+  { label: "Advisory - KYC Compliance", href: "https://www.shareindia.com/advisory-kyc-compliance" },
+  { label: "Advisory for Investors", href: "https://www.shareindia.com/advisory-for-investors" },
+  { label: "Client's Corner", href: "https://www.shareindia.com/clients-corner" },
+  { label: "Investors Corner", href: "https://www.shareindia.com/investor-corner" },
+  { label: "Contact Us", href: "https://www.shareindia.com/contact-us" },
 ];
 
-const OTHER_LINKS = [
-  "Trading Back Office",
-  "DP Back Office",
-  "MF Back Office",
-  "Online KYC Modifications",
-  "NSE",
-  "BSE",
-  "MCX",
-  "NCDEX",
-  "RBI",
-  "CDSL",
-  "Algo Trading Platform",
-  "SMART ODR",
-  "Activate Share India Algos",
-  "Client Wise Collateral - BSE",
-  "Client Collateral Details - NSE",
-  "Client Wise Collateral - MCX",
-  "Client Wise Collateral - NCDEX",
-  "SID/SAI/KIM",
-  "Code of Conduct",
-  "Disclosure",
-  "Market Maker",
-  "SCORES",
-  "Investor Awareness – Depository Mobile Applications (CDSL & NSDL)",
-  "ODR Circular",
-  "SEBI SCORES",
+const OTHER_LINKS: FooterLink[] = [
+  { label: "Trading Back Office", href: "https://bo.shareindia.com/CAP/" },
+  { label: "DP Back Office", href: "https://bo.shareindia.com/DPCC/" },
+  { label: "MF Back Office", href: "https://shareindia.my-portfolio.co.in/app/#/login" },
+  { label: "Online KYC Modifications", href: "https://rekyc.shareindia.com/home" },
+  { label: "NSE", href: "https://www.nseindia.com/" },
+  { label: "BSE", href: "https://www.bseindia.com/" },
+  { label: "MCX", href: "https://www.mcxindia.com/" },
+  { label: "NCDEX", href: "https://www.ncdex.com/" },
+  { label: "RBI", href: "http://www.rbi.org.in/home.aspx" },
+  { label: "CDSL", href: "https://www.cdslindia.com/index.html" },
+  { label: "Algo Trading Platform", href: "https://login.utradealgos.com/" },
+  { label: "SMART ODR", href: "https://smartodr.in/login" },
+  { label: "Activate Share India Algos", href: "https://rekyc.shareindia.com/forms/migration-ualgo" },
+  { label: "Client Wise Collateral - BSE", href: "https://bseplus.bseindia.com/" },
+  {
+    label: "Client Collateral Details - NSE",
+    href: "https://investorhelpline.nseindia.com/ClientCollateral/welcomeCLUser",
+  },
+  { label: "Client Wise Collateral - MCX", href: "https://clientreports.mcxccl.com/#/" },
+  { label: "Client Wise Collateral - NCDEX", href: "https://ncdex.com/subscriber/login" },
+  { label: "SID/SAI/KIM", href: "https://www.sebi.gov.in/filings/mutual-funds.html" },
+  {
+    label: "Code of Conduct",
+    href: "https://www.shareindia.com/wp-content/uploads/2024/06/RevisedCodeofConductforMutualFundDistributors-April2022.pdf",
+  },
+  {
+    label: "Disclosure",
+    href: "https://www.shareindia.com/wp-content/uploads/2024/06/MF-Commission-Disclosure.pdf",
+  },
+  { label: "Market Maker", href: "https://www.shareindia.com/market-maker" },
+  { label: "SCORES", href: "https://scores.sebi.gov.in/scores-home" },
+  {
+    label: "Investor Awareness – Depository Mobile Applications (CDSL & NSDL)",
+    href: "https://www.shareindia.com/wp-content/uploads/2026/04/Content-for-Link-for-Header.pdf",
+  },
+  {
+    label: "ODR Circular",
+    href: "https://www.shareindia.com/wp-content/uploads/2026/07/Annexue_5_SEBI_Master_Circular_for_Online_Resolution_of_Disputes_December_28_2023.pdf",
+  },
+  { label: "SEBI SCORES", href: "https://scores.sebi.gov.in/" },
 ];
 
-function LinkColumn({ title, links }: { title: string; links: string[] }) {
+function LinkColumn({ title, links }: { title: string; links: FooterLink[] }) {
   return (
     <div>
       <h4 className="mb-4 text-sm font-semibold text-white">{title}</h4>
       <ul className="flex flex-col gap-2.5">
         {links.map((link) => (
-          <li key={link}>
-            <a href="#" className="text-sm text-white/55 hover:text-white">
-              {link}
+          <li key={link.label}>
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-white/55 hover:text-white"
+            >
+              {link.label}
             </a>
           </li>
         ))}
@@ -142,10 +166,12 @@ export function Footer() {
 
             <h4 className="mt-6 mb-3 text-sm font-semibold text-white">Follow Us</h4>
             <div className="flex gap-3">
-              {SOCIALS.map(({ icon: Icon, label }) => (
+              {SOCIALS.map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
-                  href="#"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={label}
                   className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-white/60 transition-colors hover:bg-white/10 hover:text-white"
                 >
@@ -178,22 +204,48 @@ export function Footer() {
 
             <h4 className="mt-6 mb-3 text-sm font-semibold text-white">Our Apps</h4>
             <div className="flex flex-wrap items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/50">
-                <QrCode size={22} aria-hidden="true" />
-              </span>
               <a
-                href="#"
-                className="flex items-center gap-1.5 rounded-lg border border-white/15 px-3 py-2 text-xs text-white/70 hover:bg-white/5 hover:text-white"
+                href="https://play.google.com/store/apps/details?id=com.tradingapp.shareindia&pli=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Scan to download the Share India app"
+                className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1"
               >
-                <FaGooglePlay size={13} aria-hidden="true" />
-                Google Play
+                <Image
+                  src="/app-qrcode.jpg"
+                  alt="QR code to download the Share India app"
+                  width={200}
+                  height={200}
+                  className="h-full w-full object-contain"
+                />
               </a>
               <a
-                href="#"
-                className="flex items-center gap-1.5 rounded-lg border border-white/15 px-3 py-2 text-xs text-white/70 hover:bg-white/5 hover:text-white"
+                href="https://play.google.com/store/apps/details?id=com.tradingapp.shareindia&pli=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-11"
               >
-                <FaApple size={14} aria-hidden="true" />
-                App Store
+                <Image
+                  src="/playstore-badge.png"
+                  alt="Get it on Google Play"
+                  width={162}
+                  height={48}
+                  className="h-11 w-auto"
+                />
+              </a>
+              <a
+                href="https://apps.apple.com/in/app/share-india-demat-stocks-ipo/id1610726788"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-11"
+              >
+                <Image
+                  src="/appstore-badge.png"
+                  alt="Download on the App Store"
+                  width={162}
+                  height={48}
+                  className="h-11 w-auto"
+                />
               </a>
             </div>
           </div>
