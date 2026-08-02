@@ -67,12 +67,16 @@ export function FileCard({ index, total, label, color, scrollYProgress, children
           <span className="opacity-75">{String(index + 1).padStart(2, "0")}</span>
           {label}
         </div>
-        {/* The file body sizes to its own content on desktop, where cards
-            reliably fit the viewport. On mobile it can be taller than the
-            space available, so it scrolls internally instead of clipping
-            unreachable content top or bottom. */}
+        {/* The file body scrolls internally when its content is taller than
+            the space available (mobile especially, but a short desktop
+            window can hit this too) — never clips unreachable content top
+            or bottom. Deliberately left at the default `overscroll-behavior`
+            (not `contain`): once the card's own content is scrolled to its
+            end, the same continued scroll/swipe chains straight through to
+            the page scroll that drives the pinned stack, instead of getting
+            trapped inside the card with no way to advance. */}
         <div
-          className="overflow-y-auto overscroll-contain rounded-b-2xl rounded-tr-2xl border shadow-[0_25px_60px_-20px_rgba(10,41,71,0.35)] sm:overflow-hidden"
+          className="overflow-y-auto rounded-b-2xl rounded-tr-2xl border shadow-[0_25px_60px_-20px_rgba(10,41,71,0.35)]"
           style={{ borderColor: `${color}33`, background: "var(--inst-bg)" }}
         >
           {children}

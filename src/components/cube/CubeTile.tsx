@@ -1,13 +1,16 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
+import gsap from "gsap";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Feature } from "@/data/features";
 import { STICKER_SIZE } from "@/lib/cubeLayout";
 import { assembleT, assembleFullyDone, randomFlightOffset, randomDelay } from "@/lib/assemble";
+import { TILE_FLIP_DELAY_MS } from "@/lib/cubeIntro";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 interface CubeTileProps {
   position: [number, number, number];
@@ -47,6 +50,10 @@ export function CubeTile({
   const entrySeed = useMemo(() => ({ offset: randomFlightOffset(1.6, 3), delay: randomDelay() }), []);
   const entryStartRef = useRef<number | null>(null);
   const entryDoneRef = useRef(false);
+  const reducedMotion = usePrefersReducedMotion();
+  // Each tile flips independently rather than in lockstep — a small random
+  // stagger so they settle one after another instead of all at once.
+  const flipStaggerMs = useMemo(() => randomDelay(0.55) * 1000, []);
 
   // A view-independent "floor" emissive (matching the sticker's own base
   // color) keeps the whole tile at a consistent, perceptible brightness
@@ -81,6 +88,30 @@ export function CubeTile({
       if (assembleFullyDone(elapsed, entryStartRef.current)) entryDoneRef.current = true;
     }
   });
+
+  // A one-time settling flip, per tile, once the whole-cube spin and the
+  // layer-turn solving flourish have both finished — plays on the same
+  // `entryGroupRef` used for the fly-in (that only ever touches position,
+  // this only ever touches rotation, so they don't conflict). A full 2π
+  // turn keeps the tile's own grid slot exactly where drag/click hit-
+  // testing expects it, same reasoning as the front layer's own turn in
+  // solveFlourish.ts.
+  useEffect(() => {
+    if (reducedMotion || !feature) return;
+    const timer = window.setTimeout(() => {
+      const group = entryGroupRef.current;
+      if (!group) return;
+      gsap.to(group.rotation, {
+        x: Math.PI * 2,
+        duration: 0.8,
+        ease: "power1.inOut",
+        onComplete: () => {
+          group.rotation.x = 0;
+        },
+      });
+    }, TILE_FLIP_DELAY_MS + flipStaggerMs);
+    return () => window.clearTimeout(timer);
+  }, [reducedMotion, feature, flipStaggerMs]);
 
   const setHover = (isHovered: boolean) => {
     setHovered(isHovered);
@@ -131,7 +162,7 @@ export function CubeTile({
         <Html
           center
           occlude={occluderRef ? [occluderRef] : undefined}
-          distanceFactor={5.3 / cubeScale}
+          distanceFactor={5.3 * cubeScale}
           position={[0, 0, 0.05]}
           zIndexRange={[10, 0]}
         >

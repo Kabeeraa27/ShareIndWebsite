@@ -1,4 +1,4 @@
-export type TeamDepartment = "Research" | "Sales" | "Dealings" | "Operations";
+export type TeamDepartment = "Research" | "Sales" | "Dealings" | "Corporate Access" | "Operations" | "Production";
 
 export interface TeamMember {
   id: string;

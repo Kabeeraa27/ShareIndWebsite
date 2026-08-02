@@ -7,7 +7,7 @@ import { Briefcase, Mail } from "lucide-react";
 import { TEAM_MEMBERS, type TeamDepartment } from "@/data/team";
 
 const ACCENTS = ["#1b6fb8", "#ce2626", "#0a2947", "#4fa3d1"];
-const TABS = ["All", "Research", "Sales", "Dealings", "Operations"] as const;
+const TABS = ["All", "Research", "Sales", "Dealings", "Corporate Access", "Operations", "Production"] as const;
 type Tab = (typeof TABS)[number];
 
 function getInitials(name: string) {

@@ -16,6 +16,7 @@ import {
   STICKER_OFFSET,
   STICKER_SIZE,
   gridIndexToColRow,
+  type Axis,
   type FaceDefinition,
 } from "@/lib/cubeLayout";
 import { assembleT, assembleFullyDone, randomFlightOffset, randomDelay } from "@/lib/assemble";
@@ -23,8 +24,12 @@ import { SOLVE_FLOURISH_DELAY_MS } from "@/lib/cubeIntro";
 import { createFlourishState, runSolveFlourish, LAYER_EPSILON, type FlourishState } from "@/lib/solveFlourish";
 import type { Feature } from "@/data/features";
 
-/** Shared, never-mutated axis for the flourish's extra Z-axis rotation. */
-const FLOURISH_AXIS = new THREE.Vector3(0, 0, 1);
+/** Shared, never-mutated unit vectors for the flourish's per-axis rotation. */
+const AXIS_VECTORS: Record<Axis, THREE.Vector3> = {
+  x: new THREE.Vector3(1, 0, 0),
+  y: new THREE.Vector3(0, 1, 0),
+  z: new THREE.Vector3(0, 0, 1),
+};
 
 const FACE_BASE_COLORS: Record<string, string> = {
   "z-1": "#ec4899", // back
@@ -111,10 +116,9 @@ function CubieBodies({ flourish }: { flourish: React.RefObject<FlourishState> })
       return;
     }
 
-    // Post-assembly: the "solving" flourish twists the back/middle layer
-    // around the global Z axis. Everything else just holds its resting
-    // (identity) transform — see solveFlourish.ts for why this never
-    // touches the front layer.
+    // Post-assembly: the "solving" flourish spins the front/middle layer
+    // around whichever axis it's currently on. Everything else just holds
+    // its resting (identity) transform.
     const flourishState = flourish.current;
     if (!flourishState.active) return;
 
@@ -122,7 +126,10 @@ function CubieBodies({ flourish }: { flourish: React.RefObject<FlourishState> })
     const pos = new THREE.Vector3();
     const quat = new THREE.Quaternion();
     const scale = new THREE.Vector3(1, 1, 1);
-    const layerQuat = new THREE.Quaternion().setFromAxisAngle(FLOURISH_AXIS, flourishState.angle);
+    const layerQuat = new THREE.Quaternion().setFromAxisAngle(
+      AXIS_VECTORS[flourishState.axis],
+      flourishState.angle
+    );
 
     finalPositions.forEach((finalPos, i) => {
       if (Math.abs(finalPos.z - flourishState.layerValue) < LAYER_EPSILON) {
@@ -231,16 +238,20 @@ function DecorativeFace({
     // Post-assembly flourish. The back face's stickers all sit at a fixed
     // depth beyond the body-cubie grid (STICKER_OFFSET, not `STEP`), so
     // whether the *whole* face counts as "the back layer" is a face-level
-    // check; the four side faces span all three Z rows, so each sticker's
-    // own world Z (already baked into `position` via the face's rotation)
-    // decides individually.
+    // check (in practice the flourish never targets the back layer, but
+    // this stays correct if that ever changes); the four side faces span
+    // all three Z rows, so each sticker's own world Z (already baked into
+    // `position` via the face's rotation) decides individually.
     const flourishState = flourish.current;
     if (!flourishState.active) return;
 
     const matrix = new THREE.Matrix4();
     const pos = new THREE.Vector3();
     const scale = new THREE.Vector3(1, 1, 1);
-    const layerQuat = new THREE.Quaternion().setFromAxisAngle(FLOURISH_AXIS, flourishState.angle);
+    const layerQuat = new THREE.Quaternion().setFromAxisAngle(
+      AXIS_VECTORS[flourishState.axis],
+      flourishState.angle
+    );
 
     finalTransforms.forEach(({ position, quaternion }, i) => {
       const matches = isBackFace
@@ -310,14 +321,19 @@ function CameraRig({ focused }: { focused: boolean }) {
 }
 
 /**
- * Rigid Z-axis spin for the whole front layer during the solve flourish —
- * the interactive tiles (real Html buttons, see CubeTile) aren't part of
- * any InstancedMesh, so they can't be filtered per-instance the way the
- * body cubies and decorative stickers are. Wrapping the entire front
- * `CubeFace` in one rotating group turns all 9 tiles together as a single
- * layer, which is exactly what a front-face turn is. The flourish script
- * (solveFlourish.ts) guarantees this only ever lands on a full 2π turn, so
- * the tiles are always back at their real grid slot at rest.
+ * Rigid spin for the whole front layer during the solve flourish — the
+ * interactive tiles (real Html buttons, see CubeTile) aren't part of any
+ * InstancedMesh, so they can't be filtered per-instance the way the body
+ * cubies and decorative stickers are. Wrapping the entire front `CubeFace`
+ * in one rotating group turns all 9 tiles together as a single layer,
+ * which is exactly what a front-face turn is. The flourish script
+ * (solveFlourish.ts) guarantees every segment only ever lands on a full 2π
+ * turn, so the tiles are always back at their real grid slot at rest.
+ *
+ * Only one of x/y/z is ever non-zero at a time (the flourish spins one
+ * axis fully before switching to the next), so setting all three each
+ * frame is safe — no gimbal/composition ambiguity from combining rotations
+ * on more than one axis at once.
  */
 function FrontFaceRig({
   flourish,
@@ -330,8 +346,11 @@ function FrontFaceRig({
   useFrame(() => {
     const group = groupRef.current;
     if (!group) return;
-    const { active, layerValue, angle } = flourish.current;
-    group.rotation.z = active && Math.abs(layerValue - STEP) < LAYER_EPSILON ? angle : 0;
+    const { active, layerValue, axis, angle } = flourish.current;
+    const isFrontLayer = active && Math.abs(layerValue - STEP) < LAYER_EPSILON;
+    group.rotation.x = isFrontLayer && axis === "x" ? angle : 0;
+    group.rotation.y = isFrontLayer && axis === "y" ? angle : 0;
+    group.rotation.z = isFrontLayer && axis === "z" ? angle : 0;
   });
   return <group ref={groupRef}>{children}</group>;
 }

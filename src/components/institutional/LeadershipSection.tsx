@@ -26,7 +26,7 @@ export function LeadershipSection() {
           <p className="mx-auto max-w-2xl text-[var(--inst-text)]">{LEADERSHIP_INTRO}</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="mx-auto grid max-w-xl grid-cols-1 gap-6 sm:grid-cols-2">
           {LEADERSHIP.map((leader, i) => (
             <motion.button
               key={leader.id}
@@ -36,16 +36,26 @@ export function LeadershipSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="group flex flex-col items-start gap-4 rounded-2xl border border-[var(--inst-border)] bg-[var(--inst-card-alt-bg)] p-6 text-left shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
+              className="group relative overflow-hidden rounded-2xl border border-[var(--inst-border)] bg-[var(--inst-card-bg)] text-left shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
             >
-              <span className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--inst-primary)]/10">
-                <Image src={leader.image} alt="" fill sizes="56px" className="object-cover" />
-              </span>
-              <div>
-                <h3 className="text-lg font-semibold text-[var(--inst-heading)]">{leader.name}</h3>
-                <p className="text-sm font-medium text-[var(--inst-primary)]">{leader.title}</p>
+              <div className="relative aspect-[4/5] w-full overflow-hidden">
+                <Image
+                  src={leader.image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 640px) 270px, 90vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/80 to-transparent"
+                  aria-hidden="true"
+                />
+                <div className="absolute inset-x-0 bottom-0 p-5">
+                  <h3 className="text-lg font-semibold leading-tight text-white">{leader.name}</h3>
+                  <p className="mt-0.5 text-sm font-medium text-white/85">{leader.title}</p>
+                </div>
               </div>
-              <span className="mt-auto flex items-center gap-1.5 text-sm font-semibold text-[var(--inst-primary)]">
+              <span className="flex items-center gap-1.5 border-t border-[var(--inst-border)] px-5 py-3 text-sm font-semibold text-[var(--inst-primary)] transition-colors group-hover:text-[var(--inst-heading)]">
                 Read full bio
                 <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
               </span>
