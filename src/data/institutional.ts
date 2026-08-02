@@ -191,9 +191,15 @@ export const CORPORATE_OFFICE = {
   name: "Share India Securities Ltd.",
   address: "601/811, B-wing, 8th Floor, Kanakia Wall Street, Andheri East, Mumbai – 400093",
   phone: "022 69041175",
+  mapsUrl: "https://maps.app.goo.gl/iEMvnEM4HKCzMbA7A",
 };
 
+// x/linkedin are the institutional desk's own accounts; the rest don't have
+// a desk-specific equivalent, so they point to Share India's main accounts.
 export const SOCIAL_LINKS = {
-  x: "https://x.com/ShareIndiaIR",
+  facebook: "https://www.facebook.com/people/Share-India/100063991871591/",
+  instagram: "https://www.instagram.com/shareindiasecuritieslimited/",
+  youtube: "https://www.youtube.com/c/shareindiasecurities",
   linkedin: "https://www.linkedin.com/in/share-india-institutional-desk-852b10374/",
+  x: "https://x.com/ShareIndiaIR",
 };

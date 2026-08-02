@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
-import { MousePointerClick } from "lucide-react";
+import { Boxes, MousePointerClick } from "lucide-react";
 import { Background } from "./Background";
 import { features, type Feature } from "@/data/features";
 
@@ -105,10 +105,18 @@ function CubePossibilities() {
         </AnimatePresence>
       </div>
 
-      <p className="mx-auto mt-6 max-w-xl text-[10.5px] italic text-[var(--inst-text-muted)] sm:mt-8 sm:text-xs">
-        Every face of the cube represents a strength — together forming a complete solution for
-        institutional investors.
-      </p>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="glass mx-auto mt-6 flex max-w-lg items-center gap-2.5 rounded-full px-4 py-2 sm:mt-8"
+      >
+        <Boxes size={15} className="shrink-0 text-[var(--color-accent-cyan)]" aria-hidden="true" />
+        <p className="text-left text-[10.5px] leading-snug text-[var(--inst-text-muted)] sm:text-xs">
+          No face turns alone — every move ripples across the whole. That&apos;s the discipline
+          behind the desk: research, execution, and access moving as one coordinated system.
+        </p>
+      </motion.div>
     </motion.div>
   );
 }
