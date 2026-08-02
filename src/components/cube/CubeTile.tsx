@@ -1,26 +1,40 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
-import gsap from "gsap";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Feature } from "@/data/features";
-import { STICKER_SIZE } from "@/lib/cubeLayout";
+import { STICKER_SIZE, type Axis } from "@/lib/cubeLayout";
 import { assembleT, assembleFullyDone, randomFlightOffset, randomDelay } from "@/lib/assemble";
-import { TILE_FLIP_DELAY_MS } from "@/lib/cubeIntro";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { layerMatches, type FlourishState } from "@/lib/solveFlourish";
+
+/** Shared, never-mutated unit vectors for the flourish's per-axis rotation. */
+const AXIS_VECTORS: Record<Axis, THREE.Vector3> = {
+  x: new THREE.Vector3(1, 0, 0),
+  y: new THREE.Vector3(0, 1, 0),
+  z: new THREE.Vector3(0, 0, 1),
+};
 
 interface CubeTileProps {
   position: [number, number, number];
   rotation: [number, number, number];
+  /** This tile's own face — e.g. the front face is `{ axis: "z", sign: 1 }`
+   *  — used to tell whether a layer turn includes this tile (see
+   *  layerMatches in solveFlourish.ts). */
+  faceAxis: Axis;
+  faceSign: 1 | -1;
   color: string;
   feature?: Feature;
   wasDraggingRef?: React.RefObject<boolean>;
   occluderRef?: React.RefObject<THREE.Object3D>;
   /** Ancestor scale applied to the whole cube; see RubiksCubeProps. */
   cubeScale?: number;
+  /** Solve-flourish state. Only tiles on a face that can get caught up in
+   *  a real layer turn (currently just the interactive front face) need
+   *  this — decorative faces are handled in bulk by DecorativeFace instead. */
+  flourish?: React.RefObject<FlourishState>;
   onSelect?: (feature: Feature) => void;
   onHoverChange?: (id: string | null) => void;
 }
@@ -32,28 +46,32 @@ interface CubeTileProps {
 export function CubeTile({
   position,
   rotation,
+  faceAxis,
+  faceSign,
   color,
   feature,
   wasDraggingRef,
   occluderRef,
   cubeScale = 1,
+  flourish,
   onSelect,
   onHoverChange,
 }: CubeTileProps) {
   const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
   const meshRef = useRef<THREE.Mesh>(null);
+  const outerRef = useRef<THREE.Group>(null);
   const entryGroupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const hoverT = useRef(0);
+  const baseQuat = useMemo(
+    () => new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)),
+    [rotation]
+  );
 
   // On-mount "fly in and assemble" entry, independent of every other tile.
   const entrySeed = useMemo(() => ({ offset: randomFlightOffset(1.6, 3), delay: randomDelay() }), []);
   const entryStartRef = useRef<number | null>(null);
   const entryDoneRef = useRef(false);
-  const reducedMotion = usePrefersReducedMotion();
-  // Each tile flips independently rather than in lockstep — a small random
-  // stagger so they settle one after another instead of all at once.
-  const flipStaggerMs = useMemo(() => randomDelay(0.55) * 1000, []);
 
   // A view-independent "floor" emissive (matching the sticker's own base
   // color) keeps the whole tile at a consistent, perceptible brightness
@@ -87,31 +105,29 @@ export function CubeTile({
       );
       if (assembleFullyDone(elapsed, entryStartRef.current)) entryDoneRef.current = true;
     }
-  });
 
-  // A one-time settling flip, per tile, once the whole-cube spin and the
-  // layer-turn solving flourish have both finished — plays on the same
-  // `entryGroupRef` used for the fly-in (that only ever touches position,
-  // this only ever touches rotation, so they don't conflict). A full 2π
-  // turn keeps the tile's own grid slot exactly where drag/click hit-
-  // testing expects it, same reasoning as the front layer's own turn in
-  // solveFlourish.ts.
-  useEffect(() => {
-    if (reducedMotion || !feature) return;
-    const timer = window.setTimeout(() => {
-      const group = entryGroupRef.current;
-      if (!group) return;
-      gsap.to(group.rotation, {
-        x: Math.PI * 2,
-        duration: 0.8,
-        ease: "power1.inOut",
-        onComplete: () => {
-          group.rotation.x = 0;
-        },
-      });
-    }, TILE_FLIP_DELAY_MS + flipStaggerMs);
-    return () => window.clearTimeout(timer);
-  }, [reducedMotion, feature, flipStaggerMs]);
+    // Solve-flourish layer turn: if this tile's own face-axis coordinate
+    // matches the layer currently turning, orbit it around the cube's
+    // center (position *and* rotation) on that axis — a real cube move,
+    // not a spin in place. Otherwise (the common case) it just sits at its
+    // assigned slot. See layerMatches in solveFlourish.ts for why a whole
+    // face moves together when the flourish axis matches the face's own,
+    // versus each tile deciding individually otherwise.
+    const outer = outerRef.current;
+    if (outer && flourish) {
+      const f = flourish.current;
+      const matches =
+        f.active && layerMatches(faceAxis, faceSign, position[0], position[1], position[2], f.axis, f.layerValue);
+      if (matches) {
+        const layerQuat = new THREE.Quaternion().setFromAxisAngle(AXIS_VECTORS[f.axis], f.angle);
+        outer.position.set(position[0], position[1], position[2]).applyQuaternion(layerQuat);
+        outer.quaternion.copy(layerQuat).multiply(baseQuat);
+      } else {
+        outer.position.set(position[0], position[1], position[2]);
+        outer.quaternion.copy(baseQuat);
+      }
+    }
+  });
 
   const setHover = (isHovered: boolean) => {
     setHovered(isHovered);
@@ -125,7 +141,7 @@ export function CubeTile({
   };
 
   return (
-    <group position={position} rotation={rotation}>
+    <group ref={outerRef} position={position} rotation={rotation}>
       <group ref={entryGroupRef}>
       <RoundedBox
         ref={meshRef}

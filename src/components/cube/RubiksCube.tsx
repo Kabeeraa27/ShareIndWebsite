@@ -12,7 +12,6 @@ import {
   AXIS_POSITIONS,
   CUBIE_SIZE,
   FACE_DEFINITIONS,
-  STEP,
   STICKER_OFFSET,
   STICKER_SIZE,
   gridIndexToColRow,
@@ -21,7 +20,13 @@ import {
 } from "@/lib/cubeLayout";
 import { assembleT, assembleFullyDone, randomFlightOffset, randomDelay } from "@/lib/assemble";
 import { SOLVE_FLOURISH_DELAY_MS } from "@/lib/cubeIntro";
-import { createFlourishState, runSolveFlourish, LAYER_EPSILON, type FlourishState } from "@/lib/solveFlourish";
+import {
+  createFlourishState,
+  runSolveFlourish,
+  layerMatches,
+  LAYER_EPSILON,
+  type FlourishState,
+} from "@/lib/solveFlourish";
 import type { Feature } from "@/data/features";
 
 /** Shared, never-mutated unit vectors for the flourish's per-axis rotation. */
@@ -116,9 +121,10 @@ function CubieBodies({ flourish }: { flourish: React.RefObject<FlourishState> })
       return;
     }
 
-    // Post-assembly: the "solving" flourish spins the front/middle layer
-    // around whichever axis it's currently on. Everything else just holds
-    // its resting (identity) transform.
+    // Post-assembly: the "solving" flourish spins whichever layer is
+    // currently turning, around whichever axis it's currently on (always
+    // the same axis, matching a real cube move). Everything else just
+    // holds its resting (identity) transform.
     const flourishState = flourish.current;
     if (!flourishState.active) return;
 
@@ -132,7 +138,9 @@ function CubieBodies({ flourish }: { flourish: React.RefObject<FlourishState> })
     );
 
     finalPositions.forEach((finalPos, i) => {
-      if (Math.abs(finalPos.z - flourishState.layerValue) < LAYER_EPSILON) {
+      const coord =
+        flourishState.axis === "x" ? finalPos.x : flourishState.axis === "y" ? finalPos.y : finalPos.z;
+      if (Math.abs(coord - flourishState.layerValue) < LAYER_EPSILON) {
         pos.copy(finalPos).applyQuaternion(layerQuat);
         quat.copy(layerQuat);
       } else {
@@ -173,7 +181,6 @@ function DecorativeFace({
   color: string;
   flourish: React.RefObject<FlourishState>;
 }) {
-  const isBackFace = face.axis === "z" && face.sign === -1;
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const geometry = useMemo(
     () => new RoundedBoxGeometry(STICKER_SIZE, STICKER_SIZE, 0.06, 1, 0.07),
@@ -235,13 +242,13 @@ function DecorativeFace({
       return;
     }
 
-    // Post-assembly flourish. The back face's stickers all sit at a fixed
-    // depth beyond the body-cubie grid (STICKER_OFFSET, not `STEP`), so
-    // whether the *whole* face counts as "the back layer" is a face-level
-    // check (in practice the flourish never targets the back layer, but
-    // this stays correct if that ever changes); the four side faces span
-    // all three Z rows, so each sticker's own world Z (already baked into
-    // `position` via the face's rotation) decides individually.
+    // Post-assembly flourish. Every sticker on this face sits at the same
+    // fixed depth along the face's own axis (e.g. every "right" face
+    // sticker has x ≈ its outward offset, not `STEP`), so whether the
+    // *whole* face counts as a layer, versus each sticker deciding
+    // individually via its own varying in-plane coordinate, depends on
+    // whether the flourish's axis matches this face's own — see
+    // layerMatches in solveFlourish.ts.
     const flourishState = flourish.current;
     if (!flourishState.active) return;
 
@@ -254,9 +261,15 @@ function DecorativeFace({
     );
 
     finalTransforms.forEach(({ position, quaternion }, i) => {
-      const matches = isBackFace
-        ? Math.abs(flourishState.layerValue - -STEP) < LAYER_EPSILON
-        : Math.abs(position.z - flourishState.layerValue) < LAYER_EPSILON;
+      const matches = layerMatches(
+        face.axis,
+        face.sign,
+        position.x,
+        position.y,
+        position.z,
+        flourishState.axis,
+        flourishState.layerValue
+      );
 
       if (matches) {
         pos.copy(position).applyQuaternion(layerQuat);
@@ -318,41 +331,6 @@ function CameraRig({ focused }: { focused: boolean }) {
   });
   /* eslint-enable react-hooks/immutability */
   return null;
-}
-
-/**
- * Rigid spin for the whole front layer during the solve flourish — the
- * interactive tiles (real Html buttons, see CubeTile) aren't part of any
- * InstancedMesh, so they can't be filtered per-instance the way the body
- * cubies and decorative stickers are. Wrapping the entire front `CubeFace`
- * in one rotating group turns all 9 tiles together as a single layer,
- * which is exactly what a front-face turn is. The flourish script
- * (solveFlourish.ts) guarantees every segment only ever lands on a full 2π
- * turn, so the tiles are always back at their real grid slot at rest.
- *
- * Only one of x/y/z is ever non-zero at a time (the flourish spins one
- * axis fully before switching to the next), so setting all three each
- * frame is safe — no gimbal/composition ambiguity from combining rotations
- * on more than one axis at once.
- */
-function FrontFaceRig({
-  flourish,
-  children,
-}: {
-  flourish: React.RefObject<FlourishState>;
-  children: React.ReactNode;
-}) {
-  const groupRef = useRef<THREE.Group>(null);
-  useFrame(() => {
-    const group = groupRef.current;
-    if (!group) return;
-    const { active, layerValue, axis, angle } = flourish.current;
-    const isFrontLayer = active && Math.abs(layerValue - STEP) < LAYER_EPSILON;
-    group.rotation.x = isFrontLayer && axis === "x" ? angle : 0;
-    group.rotation.y = isFrontLayer && axis === "y" ? angle : 0;
-    group.rotation.z = isFrontLayer && axis === "z" ? angle : 0;
-  });
-  return <group ref={groupRef}>{children}</group>;
 }
 
 export function RubiksCube({
@@ -423,18 +401,17 @@ export function RubiksCube({
           ))}
         </group>
 
-        <FrontFaceRig flourish={flourish}>
-          <CubeFace
-            face={FRONT_FACE}
-            baseColor="#12141f"
-            interactive
-            wasDraggingRef={wasDraggingRef}
-            occluderRef={occluderRef as React.RefObject<THREE.Object3D>}
-            cubeScale={cubeScale}
-            onSelectFeature={handleSelect}
-            onHoverChange={setHoveredTile}
-          />
-        </FrontFaceRig>
+        <CubeFace
+          face={FRONT_FACE}
+          baseColor="#12141f"
+          interactive
+          wasDraggingRef={wasDraggingRef}
+          occluderRef={occluderRef as React.RefObject<THREE.Object3D>}
+          cubeScale={cubeScale}
+          flourish={flourish}
+          onSelectFeature={handleSelect}
+          onHoverChange={setHoveredTile}
+        />
       </group>
 
       <ContactShadows

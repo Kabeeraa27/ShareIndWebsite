@@ -5,6 +5,7 @@ import { CubeTile } from "./CubeTile";
 import type { Feature } from "@/data/features";
 import { getFeatureByGridIndex } from "@/data/features";
 import { STICKER_OFFSET, gridIndexToColRow, type FaceDefinition } from "@/lib/cubeLayout";
+import type { FlourishState } from "@/lib/solveFlourish";
 
 interface CubeFaceProps {
   face: FaceDefinition;
@@ -17,6 +18,9 @@ interface CubeFaceProps {
   occluderRef?: React.RefObject<THREE.Object3D>;
   /** Ancestor scale applied to the whole cube; see RubiksCubeProps. */
   cubeScale?: number;
+  /** Solve-flourish state — only meaningful for the front face, whose tiles
+   *  can be caught up in a layer turn (see CubeTile). */
+  flourish?: React.RefObject<FlourishState>;
   onSelectFeature?: (feature: Feature) => void;
   onHoverChange?: (id: string | null) => void;
 }
@@ -29,6 +33,7 @@ export function CubeFace({
   wasDraggingRef,
   occluderRef,
   cubeScale,
+  flourish,
   onSelectFeature,
   onHoverChange,
 }: CubeFaceProps) {
@@ -46,11 +51,14 @@ export function CubeFace({
             key={`${face.axis}${face.sign}-${gridIndex}`}
             position={[local.x, local.y, local.z]}
             rotation={face.rotation}
+            faceAxis={face.axis}
+            faceSign={face.sign}
             color={baseColor}
             feature={feature}
             wasDraggingRef={wasDraggingRef}
             occluderRef={occluderRef}
             cubeScale={cubeScale}
+            flourish={flourish}
             onSelect={onSelectFeature}
             onHoverChange={onHoverChange}
           />
