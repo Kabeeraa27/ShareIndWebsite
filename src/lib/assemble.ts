@@ -4,8 +4,18 @@
  *  needs to be passed down as a prop and everything still starts in sync
  *  (they all take their first frame within the same React commit).
  */
-export const ASSEMBLE_DURATION = 1.3;
-export const ASSEMBLE_MAX_DELAY = 0.8;
+export const ASSEMBLE_DURATION = 1.6;
+export const ASSEMBLE_MAX_DELAY = 0.9;
+
+/** A brief hold at each piece's fully-flown-out starting position before
+ *  it begins moving. The Canvas's very first rendered frames are also when
+ *  the browser is compiling shaders and warming up the WebGL context — if
+ *  the flight animation starts counting from that same instant, the piece
+ *  covers a big chunk of its motion across only a couple of slow, dropped
+ *  frames and reads as a jump-cut instead of a glide. Holding still for a
+ *  moment first lets that warm-up happen on an unchanging frame, so the
+ *  actual motion starts once rendering has settled into a steady rate. */
+const ASSEMBLE_WARMUP = 0.15;
 
 /** Cubic "back out" ease — pieces overshoot slightly past their resting
  *  spot and settle back, reading as a physical snap into place rather
@@ -25,27 +35,28 @@ export function assembleT(
   delay: number,
   duration: number = ASSEMBLE_DURATION
 ): number {
-  const raw = (elapsed - startTime - delay) / duration;
+  const raw = (elapsed - startTime - ASSEMBLE_WARMUP - delay) / duration;
   return easeOutBack(Math.max(0, Math.min(1, raw)));
 }
 
 /** Whether every piece with delays up to ASSEMBLE_MAX_DELAY has finished. */
 export function assembleFullyDone(elapsed: number, startTime: number): boolean {
-  return elapsed - startTime > ASSEMBLE_DURATION + ASSEMBLE_MAX_DELAY;
+  return elapsed - startTime > ASSEMBLE_WARMUP + ASSEMBLE_DURATION + ASSEMBLE_MAX_DELAY;
 }
 
-/** A random starting offset for a piece to fly in from. Biased toward the
- *  XY plane (lateral motion reads as "flying across the screen") with a
- *  smaller Z kick for depth variety — pure spherical sampling put pieces
- *  far enough along Z that they spent most of the flight outside the
- *  camera frustum, invisible until they were nearly home. */
+/** A random starting offset for a piece to fly in from — always rising up
+ *  from below its final resting spot (a consistently positive Y kick)
+ *  with a lateral x/z spread around a random angle, so the whole cube
+ *  reads as pieces flying up and in together rather than converging from
+ *  arbitrary directions. */
 export function randomFlightOffset(minDistance: number, maxDistance: number) {
   const angle = Math.random() * Math.PI * 2;
-  const distance = minDistance + Math.random() * (maxDistance - minDistance);
+  const lateral = minDistance + Math.random() * (maxDistance - minDistance);
+  const rise = minDistance + Math.random() * (maxDistance - minDistance);
   return {
-    x: Math.cos(angle) * distance,
-    y: Math.sin(angle) * distance,
-    z: (Math.random() - 0.5) * distance * 0.7,
+    x: Math.cos(angle) * lateral,
+    y: rise,
+    z: Math.sin(angle) * lateral * 0.7,
   };
 }
 

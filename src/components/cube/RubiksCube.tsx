@@ -101,6 +101,7 @@ function CubieBodies({ flourish }: { flourish: React.RefObject<FlourishState> })
       const pos = new THREE.Vector3();
       const scale = new THREE.Vector3(1, 1, 1);
       const quat = new THREE.Quaternion();
+      const euler = new THREE.Euler();
 
       finalPositions.forEach((finalPos, i) => {
         const { offset, delay } = flightSeeds[i];
@@ -111,7 +112,8 @@ function CubieBodies({ flourish }: { flourish: React.RefObject<FlourishState> })
           finalPos.y + offset.y * remaining,
           finalPos.z + offset.z * remaining
         );
-        quat.setFromEuler(new THREE.Euler(remaining * Math.PI * 1.5, remaining * Math.PI * 1.5, 0));
+        euler.set(remaining * Math.PI * 1.5, remaining * Math.PI * 1.5, 0);
+        quat.setFromEuler(euler);
         matrix.compose(pos, quat, scale);
         mesh.setMatrixAt(i, matrix);
       });

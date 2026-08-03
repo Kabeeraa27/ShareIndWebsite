@@ -167,6 +167,26 @@ function InfoLine({ label, value }: { label: string; value: string }) {
   );
 }
 
+/** Same label/value pairing as InfoLine, but for a value that's really a
+ *  list — one item per line instead of a single comma-separated run-on. */
+function InfoListLine({ label, items }: { label: string; items: string[] }) {
+  return (
+    <div>
+      <p className="text-white/70">{label}:</p>
+      <ul className="mt-0.5 flex flex-col gap-0.5">
+        {items.map((item) => (
+          <li key={item} className="flex gap-1.5">
+            <span className="text-white/30" aria-hidden="true">
+              -
+            </span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function Footer() {
   return (
     <footer className="relative border-t border-white/10 bg-background/60">
@@ -359,12 +379,15 @@ export function Footer() {
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <DisclosureCard icon={ShieldAlert} title="Membership Details">
-                      <div className="flex flex-col gap-1">
-                        <InfoLine
+                      <div className="flex flex-col gap-3">
+                        <InfoListLine
                           label="Exchanges"
-                          value="NSE - 10798, BSE - 0226, MCX - 56190, NCDEX - 1256, MSE - 51200"
+                          items={["NSE - 10798", "BSE - 0226", "MCX - 56190", "NCDEX - 1256", "MSE - 51200"]}
                         />
-                        <InfoLine label="Depository Participant" value="CDSL DP ID: 12038000, NSDL DP ID: IN304965" />
+                        <InfoListLine
+                          label="Depository Participant"
+                          items={["CDSL DP ID: 12038000", "NSDL DP ID: IN304965"]}
+                        />
                       </div>
                     </DisclosureCard>
 

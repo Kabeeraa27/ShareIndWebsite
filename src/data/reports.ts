@@ -17,6 +17,7 @@ import type { IconType } from "react-icons";
 
 export const REPORT_CATEGORIES = [
   "Thematic",
+  "MTF Top Picks",
   "Initiating Coverage",
   "Management Meet Notes",
   "Result Update",
@@ -38,10 +39,10 @@ export interface ReportSectorSeed {
   /** One vivid, sector-specific line — the "artillery and tanks" kind of
    *  detail that makes each folder feel like it belongs to a real desk. */
   blurb: string;
-  /** Short titles specific to this sector, in category order (2 per
-   *  category); combined with generated dates/page counts at build time
-   *  via buildFiles() so the data below stays readable. */
-  titles: [string, string, string, string, string, string];
+  /** Short titles specific to this sector, combined with generated
+   *  dates/page counts at build time via buildFiles() so the data below
+   *  stays readable. */
+  titles: [string, string, string, string, string, string, string];
 }
 
 export interface ReportSector extends Omit<ReportSectorSeed, "titles"> {
@@ -59,6 +60,7 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
  *  under Result Update. */
 function categorize(title: string): ReportCategory {
   const t = title.toLowerCase();
+  if (t.includes("mtf")) return "MTF Top Picks";
   if (t.includes("management meet")) return "Management Meet Notes";
   if (t.includes("coverage initiation")) return "Initiating Coverage";
   if (t.includes("thematic")) return "Thematic";
@@ -96,6 +98,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Private Banks — Coverage Initiation",
       "Insurance — Management Meet Note",
       "BFSI Monthly Credit Growth Tracker",
+      "BFSI — MTF Top Pick",
     ],
   },
   {
@@ -111,6 +114,7 @@ const SEEDS: ReportSectorSeed[] = [
       "PV OEMs — Coverage Initiation",
       "Auto Dealer Channel Check",
       "Auto Monthly Volume Wrap",
+      "Auto — MTF Top Pick",
     ],
   },
   {
@@ -126,6 +130,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Hospitality — Coverage Initiation",
       "Hotel Chains — Management Meet Note",
       "Hospitality Monthly Occupancy Wrap",
+      "Hospitality — MTF Top Pick",
     ],
   },
   {
@@ -141,6 +146,7 @@ const SEEDS: ReportSectorSeed[] = [
       "White Goods — Coverage Initiation",
       "Consumer Durables Thematic Note",
       "Consumer Durables Monthly Wrap",
+      "Consumer Durables — MTF Top Pick",
     ],
   },
   {
@@ -156,6 +162,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Specialty Formulations Thematic",
       "Pharma — Management Meet Note",
       "Pharma Monthly Launch Tracker",
+      "Pharma — MTF Top Pick",
     ],
   },
   {
@@ -171,6 +178,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Capital Goods — Management Meet Note",
       "Manufacturing PLI Thematic",
       "Capital Goods Monthly Wrap",
+      "Capital Goods — MTF Top Pick",
     ],
   },
   {
@@ -186,6 +194,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Cement — Management Meet Note",
       "Cement Cost Curve Thematic",
       "Cement Monthly Dispatch Wrap",
+      "Cement — MTF Top Pick",
     ],
   },
   {
@@ -201,6 +210,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Ports & Logistics Thematic",
       "Infrastructure — Management Meet Note",
       "Infrastructure Monthly Order Wrap",
+      "Infrastructure — MTF Top Pick",
     ],
   },
   {
@@ -216,6 +226,7 @@ const SEEDS: ReportSectorSeed[] = [
       "GenAI Impact on Services — Thematic",
       "IT — Management Meet Note",
       "IT Monthly Hiring Tracker",
+      "IT — MTF Top Pick",
     ],
   },
   {
@@ -231,6 +242,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Auto Ancillaries — Management Meet Note",
       "Export Ancillaries Thematic",
       "Auto Ancillaries Monthly Wrap",
+      "Auto Ancillaries — MTF Top Pick",
     ],
   },
   {
@@ -246,6 +258,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Real Estate — Management Meet Note",
       "Commercial Leasing Thematic",
       "Real Estate Monthly Launch Wrap",
+      "Real Estate — MTF Top Pick",
     ],
   },
   {
@@ -261,6 +274,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Power — Management Meet Note",
       "Energy Transition Thematic",
       "Power Monthly Generation Wrap",
+      "Power — MTF Top Pick",
     ],
   },
   {
@@ -276,6 +290,7 @@ const SEEDS: ReportSectorSeed[] = [
       "Textiles — Management Meet Note",
       "Export Demand Thematic",
       "Textiles Monthly Order Wrap",
+      "Textiles — MTF Top Pick",
     ],
   },
 ];

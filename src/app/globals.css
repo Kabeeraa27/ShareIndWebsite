@@ -247,9 +247,39 @@ body {
 }
 
 /* Light-theme variant: `screen` blending washes out to near-white against
-   a bright backdrop, so the ribbons switch to normal blending — same blue
-   palette as the dark theme, just composited differently so it reads as a
-   visible blue sweep instead of a glow against black. */
+   a bright backdrop, so the ribbons switch to normal blending. Also swaps
+   in a blue-to-teal-green palette closer to a real aurora borealis photo —
+   dark theme keeps its original blue/cyan-only look untouched above. */
 .aurora-light .aurora-band {
   mix-blend-mode: normal;
+}
+
+.aurora-light .aurora-band-1 {
+  background: linear-gradient(
+    100deg,
+    transparent 8%,
+    rgba(84, 169, 212, 0.55) 26%,
+    rgba(45, 212, 160, 0.4) 48%,
+    transparent 72%
+  );
+}
+
+.aurora-light .aurora-band-2 {
+  background: linear-gradient(
+    125deg,
+    transparent 15%,
+    rgba(56, 189, 248, 0.4) 36%,
+    rgba(16, 185, 129, 0.32) 58%,
+    transparent 82%
+  );
+}
+
+.aurora-light .aurora-band-3 {
+  background: linear-gradient(
+    75deg,
+    transparent 18%,
+    rgba(148, 197, 222, 0.35) 40%,
+    rgba(34, 211, 238, 0.3) 62%,
+    transparent 88%
+  );
 }
