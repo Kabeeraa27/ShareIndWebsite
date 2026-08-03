@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
-import { Boxes, MousePointerClick } from "lucide-react";
+import { MousePointerClick } from "lucide-react";
 import { Background } from "./Background";
 import { features, type Feature } from "@/data/features";
 
@@ -52,17 +52,20 @@ function CubePossibilities() {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-      className="relative z-10 mb-2 w-full max-w-2xl text-center"
+      className="relative z-10 mb-2 w-full max-w-3xl text-center"
     >
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-accent-cyan)] sm:text-sm">
+      <p
+        className="text-sm font-bold uppercase tracking-[0.25em] text-[var(--color-accent-cyan)] sm:text-base"
+        style={{ fontFamily: "var(--font-display)" }}
+      >
         The Cube of Possibilities
       </p>
-      <p className="mx-auto mt-2 max-w-xl text-xs text-[var(--inst-text-muted)] sm:text-sm">
+      <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-relaxed text-[var(--inst-text)] sm:text-lg">
         Like a Rubik&apos;s Cube, our institutional business is built on precision, agility, and
         multidimensional solutions.
       </p>
 
-      <div className="no-scrollbar mx-auto mt-5 flex max-w-xl items-center justify-center gap-3 overflow-x-auto whitespace-nowrap px-2 sm:gap-5">
+      <div className="mx-auto mt-7 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-3 px-2 sm:gap-x-8">
         {CUBE_MODULES.map((module, i) => {
           const isActive = i === active;
           return (
@@ -70,19 +73,25 @@ function CubePossibilities() {
               key={module.title}
               type="button"
               onClick={() => setActive(i)}
-              className="group flex shrink-0 flex-col items-center gap-1.5"
+              className="group flex shrink-0 flex-col items-center gap-2"
             >
               <span
-                className="text-[9.5px] font-semibold uppercase tracking-wide transition-all duration-300 sm:text-xs"
-                style={{ color: module.color, opacity: isActive ? 1 : 0.45 }}
+                className="text-sm font-bold uppercase tracking-wider transition-all duration-300 sm:text-lg"
+                style={{
+                  color: module.color,
+                  opacity: isActive ? 1 : 0.45,
+                  fontFamily: "var(--font-display)",
+                  textShadow: isActive ? `0 0 18px ${module.color}` : "none",
+                }}
               >
                 {module.title}
               </span>
               <span
-                className="h-[2px] rounded-full transition-all duration-300"
+                className="h-[3px] rounded-full transition-all duration-300"
                 style={{
                   width: isActive ? "100%" : "0%",
                   background: module.color,
+                  boxShadow: isActive ? `0 0 10px ${module.color}` : "none",
                 }}
               />
             </button>
@@ -90,7 +99,7 @@ function CubePossibilities() {
         })}
       </div>
 
-      <div className="relative mx-auto mt-4 min-h-[2.75rem] max-w-lg sm:min-h-[1.5rem]">
+      <div className="relative mx-auto mt-5 min-h-[3.5rem] max-w-xl sm:min-h-[2rem]">
         <AnimatePresence mode="wait">
           <motion.p
             key={active}
@@ -98,25 +107,12 @@ function CubePossibilities() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-x-0 top-0 text-xs text-[var(--inst-text-muted)] sm:text-sm"
+            className="absolute inset-x-0 top-0 text-sm font-medium leading-snug text-[var(--inst-text)] sm:text-base"
           >
             {CUBE_MODULES[active].description}
           </motion.p>
         </AnimatePresence>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="glass mx-auto mt-6 flex max-w-lg items-center gap-2.5 rounded-full px-4 py-2 sm:mt-8"
-      >
-        <Boxes size={15} className="shrink-0 text-[var(--color-accent-cyan)]" aria-hidden="true" />
-        <p className="text-left text-[10.5px] leading-snug text-[var(--inst-text-muted)] sm:text-xs">
-          No face turns alone — every move ripples across the whole. That&apos;s the discipline
-          behind the desk: research, execution, and access moving as one coordinated system.
-        </p>
-      </motion.div>
     </motion.div>
   );
 }
