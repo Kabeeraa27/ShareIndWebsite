@@ -55,7 +55,7 @@ function CubePossibilities() {
       className="relative z-10 mb-2 w-full max-w-3xl text-center"
     >
       <p
-        className="text-sm font-bold uppercase tracking-[0.25em] text-[var(--color-accent-cyan)] sm:text-base"
+        className="text-sm font-bold uppercase tracking-[0.25em] text-[var(--cube-label-accent)] sm:text-base"
         style={{ fontFamily: "var(--font-display)" }}
       >
         The Cube of Possibilities

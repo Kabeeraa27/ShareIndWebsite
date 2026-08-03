@@ -51,10 +51,13 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
   }, [mouseX, mouseY]);
 
   const baseGradient = isLight
-    ? "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.35), transparent 60%)," +
-      "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.10), transparent 60%)," +
-      "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(10,41,71,0.14), transparent 60%)," +
-      "linear-gradient(180deg, #e6eef4 0%, #5085a5 55%, #e6eef4 100%)"
+    ? // The "French Blue -> Frosted Blue" coastal ramp, used specifically
+      // for the backdrop behind the hero cube in light theme (not the
+      // site's red/blue/white brand palette used elsewhere).
+      "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.35), transparent 60%)," +
+      "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(0,119,182,0.14), transparent 60%)," +
+      "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(2,62,138,0.16), transparent 60%)," +
+      "linear-gradient(180deg, #90e0ef 0%, #48cae4 22%, #0096c7 50%, #48cae4 78%, #90e0ef 100%)"
     : "radial-gradient(ellipse 80% 60% at 20% 15%, rgba(84,169,212,0.20), transparent 60%)," +
       "radial-gradient(ellipse 70% 60% at 85% 20%, rgba(239,68,68,0.16), transparent 60%)," +
       "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(84,169,212,0.12), transparent 60%)," +
@@ -68,7 +71,7 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
   return (
     <div
       className={`pointer-events-none absolute inset-0 -z-10 overflow-hidden ${
-        isLight ? "bg-[#5085a5]" : "bg-background"
+        isLight ? "bg-[#0096c7]" : "bg-background"
       }`}
     >
       {/* Base gradient mesh */}

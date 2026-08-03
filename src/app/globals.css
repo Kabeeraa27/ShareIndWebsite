@@ -46,6 +46,12 @@
   --inst-accent: #ce2626;
   --inst-accent-dark: #a81d1d;
   --inst-overlay: rgba(10, 41, 71, 0.55);
+  /* The hero's "Cube of Possibilities" tagline sits over the light-theme
+     cube backdrop's bright teal/aqua wash, where the site-wide accent
+     cyan (--color-accent-cyan) is too close in hue/lightness to read.
+     French Blue from that backdrop's own palette gives it real contrast
+     without touching the accent color used everywhere else. */
+  --cube-label-accent: #023e8a;
 }
 
 [data-theme="dark"] {
@@ -62,6 +68,7 @@
   --inst-accent: #ef4444;
   --inst-accent-dark: #b91c1c;
   --inst-overlay: rgba(0, 0, 0, 0.6);
+  --cube-label-accent: #22d3ee;
 }
 
 /* Headline gradient inside the theme-scoped hero bands (Hero, TeamHero,
@@ -340,21 +347,28 @@ body {
 }
 
 /* Light-theme variant: `screen` blending washes out to near-white against
-   a bright backdrop, so the curtains switch to normal blending. Also swaps
-   in a blue-to-teal-green palette closer to a real aurora borealis photo —
-   dark theme keeps its original blue/cyan-only look untouched above. */
+   a bright backdrop, so the curtains switch to normal blending. Colors
+   swap to the exact "French Blue -> Frosted Blue" coastal ramp supplied
+   for the light-theme backdrop behind the cube — dark theme keeps its
+   original blue/cyan-only look untouched above.
+     French Blue #023E8A · Bright Teal Blue #0077B6 · Blue Green #0096C7 ·
+     Turquoise Surf #00B4D8 · Sky Aqua #48CAE4 · Frosted Blue #90E0EF */
 .aurora-light .aurora-veil,
 .aurora-light .aurora-curtain {
   mix-blend-mode: normal;
+}
+
+.aurora-light .aurora-veil {
+  background: radial-gradient(ellipse 55% 55% at 50% 25%, rgba(0, 180, 216, 0.22), transparent 70%);
 }
 
 .aurora-light .aurora-curtain-1 {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(148, 197, 222, 0.28) 18%,
-    rgba(84, 169, 212, 0.5) 38%,
-    rgba(45, 212, 160, 0.32) 62%,
+    rgba(72, 202, 228, 0.28) 18%,
+    rgba(0, 119, 182, 0.5) 38%,
+    rgba(72, 202, 228, 0.32) 62%,
     transparent 92%
   );
 }
@@ -363,9 +377,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(56, 189, 248, 0.22) 15%,
-    rgba(16, 185, 129, 0.4) 35%,
-    rgba(84, 169, 212, 0.28) 60%,
+    rgba(0, 180, 216, 0.22) 15%,
+    rgba(0, 150, 199, 0.4) 35%,
+    rgba(144, 224, 239, 0.28) 60%,
     transparent 90%
   );
 }
@@ -374,9 +388,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(84, 169, 212, 0.3) 14%,
-    rgba(45, 212, 160, 0.48) 34%,
-    rgba(148, 197, 222, 0.25) 58%,
+    rgba(0, 119, 182, 0.3) 14%,
+    rgba(2, 62, 138, 0.48) 34%,
+    rgba(0, 180, 216, 0.25) 58%,
     transparent 90%
   );
 }
@@ -385,9 +399,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(34, 211, 238, 0.25) 16%,
-    rgba(16, 185, 129, 0.38) 36%,
-    rgba(56, 189, 248, 0.22) 60%,
+    rgba(144, 224, 239, 0.25) 16%,
+    rgba(0, 150, 199, 0.38) 36%,
+    rgba(0, 119, 182, 0.22) 60%,
     transparent 90%
   );
 }
@@ -396,9 +410,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(148, 197, 222, 0.24) 18%,
-    rgba(45, 212, 160, 0.36) 40%,
-    rgba(84, 169, 212, 0.22) 64%,
+    rgba(0, 180, 216, 0.24) 18%,
+    rgba(72, 202, 228, 0.36) 40%,
+    rgba(144, 224, 239, 0.22) 64%,
     transparent 92%
   );
 }
