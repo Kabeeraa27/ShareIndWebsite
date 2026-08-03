@@ -63,10 +63,14 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
         "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(0,119,182,0.14), transparent 60%)," +
         "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(2,62,138,0.16), transparent 60%)," +
         "linear-gradient(180deg, #90e0ef 0%, #48cae4 22%, #0096c7 50%, #48cae4 78%, #90e0ef 100%)"
-      : "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.35), transparent 60%)," +
-        "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.10), transparent 60%)," +
-        "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(10,41,71,0.14), transparent 60%)," +
-        "linear-gradient(180deg, #e6eef4 0%, #5085a5 55%, #e6eef4 100%)"
+      : // Flat cream fill — same #f8efdb as --inst-card-alt-bg, the color
+        // the "Serving"/"Presence" tab blocks (and other cards) use, so
+        // these banners sit on the same tone as the content below them
+        // instead of the old blue wash.
+        "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.35), transparent 60%)," +
+        "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.06), transparent 60%)," +
+        "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(10,41,71,0.08), transparent 60%)," +
+        "linear-gradient(180deg, #f8efdb 0%, #f8efdb 100%)"
     : "radial-gradient(ellipse 80% 60% at 20% 15%, rgba(84,169,212,0.20), transparent 60%)," +
       "radial-gradient(ellipse 70% 60% at 85% 20%, rgba(239,68,68,0.16), transparent 60%)," +
       "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(84,169,212,0.12), transparent 60%)," +
@@ -80,7 +84,7 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
   return (
     <div
       className={`pointer-events-none absolute inset-0 -z-10 overflow-hidden ${
-        isLight ? (aurora ? "bg-[#0096c7]" : "bg-[#5085a5]") : "bg-background"
+        isLight ? (aurora ? "bg-[#0096c7]" : "bg-[#f8efdb]") : "bg-background"
       }`}
     >
       {/* Base gradient mesh */}
