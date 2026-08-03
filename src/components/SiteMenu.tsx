@@ -37,8 +37,14 @@ const ENTRIES: MenuEntry[] = [
 
 /** Global sitemap overlay, reachable from the top-right corner on every
  *  page — the fallback way back into the site once a visitor has left the
- *  cube's own click-to-navigate flow. */
-export function SiteMenu() {
+ *  cube's own click-to-navigate flow.
+ *
+ *  `onLight`: true when the navbar is unscrolled in light theme, sitting
+ *  directly on the page's own pale cream backdrop rather than the dark
+ *  "glass" bar — the trigger icon needs a dark color there instead of the
+ *  usual white to stay visible (the dropdown panel itself is always the
+ *  same dark glass regardless, so its contents don't need this). */
+export function SiteMenu({ onLight = false }: { onLight?: boolean }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -48,7 +54,9 @@ export function SiteMenu() {
         onClick={() => setOpen(true)}
         aria-label="Open site menu"
         aria-expanded={open}
-        className="flex h-9 w-9 items-center justify-center rounded-full text-white/75 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+        className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 ${
+          onLight ? "text-[#0a2947]/80 hover:bg-black/5 hover:text-[#0a2947]" : "text-white/75 hover:bg-white/10 hover:text-white"
+        }`}
       >
         <LayoutGrid size={17} />
       </button>

@@ -30,6 +30,14 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /** Once scrolled, the bar gets its own dark "glass" backing (see the
+   *  className below) regardless of theme, so white text/icons always read
+   *  fine there. Unscrolled, the bar sits directly on the page's own
+   *  backdrop — near-black in dark theme (white still reads fine) but a
+   *  pale cream in light theme, where white nav text nearly disappears.
+   *  This only needs a dark, contrasting color for that one combination. */
+  const onLight = theme === "light" && !scrolled;
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
@@ -70,7 +78,9 @@ export function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-sm text-white/75 transition-colors duration-200 hover:text-white"
+                className={`text-sm transition-colors duration-200 ${
+                  onLight ? "text-[#0a2947]/80 hover:text-[#0a2947]" : "text-white/75 hover:text-white"
+                }`}
               >
                 {link.label}
               </Link>
@@ -79,20 +89,22 @@ export function Navbar() {
         </ul>
 
         <div className="hidden items-center gap-2 xl:flex">
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          <SiteMenu />
+          <ThemeToggle theme={theme} onToggle={toggleTheme} onLight={onLight} />
+          <SiteMenu onLight={onLight} />
           <MagneticButton href="/#get-started">Get Started</MagneticButton>
         </div>
 
         <div className="flex items-center gap-2 xl:hidden">
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          <SiteMenu />
+          <ThemeToggle theme={theme} onToggle={toggleTheme} onLight={onLight} />
+          <SiteMenu onLight={onLight} />
           <button
             type="button"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-white"
+            className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+              onLight ? "text-[#0a2947]" : "text-white"
+            }`}
           >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -136,13 +148,23 @@ export function Navbar() {
 /** Toggles the institutional sections between the new light redesign and
  *  the site's original dark theme. Doesn't affect the cube, Navbar, or
  *  Footer — those stay as-is regardless of the choice. */
-function ThemeToggle({ theme, onToggle }: { theme: "light" | "dark"; onToggle: () => void }) {
+function ThemeToggle({
+  theme,
+  onToggle,
+  onLight,
+}: {
+  theme: "light" | "dark";
+  onToggle: () => void;
+  onLight: boolean;
+}) {
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
-      className="flex h-9 w-9 items-center justify-center rounded-full text-white/75 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+      className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 ${
+        onLight ? "text-[#0a2947]/80 hover:bg-black/5 hover:text-[#0a2947]" : "text-white/75 hover:bg-white/10 hover:text-white"
+      }`}
     >
       {theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
     </button>
