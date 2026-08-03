@@ -59,31 +59,31 @@ const PAUSE = 0.35; // a beat between moves, like a hand repositioning
 
 /** Total wall-clock length of the scripted sequence below, so callers
  *  (CubeTile's own post-flourish tile flip) know when it's safe to layer
- *  another animation on top without the two overlapping. 6 moves, one
- *  full turn each, 5 pauses between them. */
-const MOVE_COUNT = 6;
+ *  another animation on top without the two overlapping. 4 moves, one
+ *  full turn each, 3 pauses between them. */
+const MOVE_COUNT = 4;
 export const FLOURISH_TOTAL_DURATION_MS = (TURN_DURATION * MOVE_COUNT + PAUSE * (MOVE_COUNT - 1)) * 1000;
 
 /**
  * Scripted, one-time "solving" flourish played after the intro spin
- * settles — six real cube moves in sequence, in standard-notation order:
+ * settles — four real cube moves in sequence, in standard-notation order:
  *
- *   F (front, z=+STEP)   → S (middle slice, z=0) → L (left, x=-STEP) →
- *   R (right, x=+STEP)   → U (up, y=+STEP)        → D (down, y=-STEP)
+ *   L (left, x=-STEP) → R (right, x=+STEP) → U (up, y=+STEP) → D (down, y=-STEP)
+ *
+ * (F and S — the two z-axis moves — are intentionally skipped; only the
+ * x/y-axis layer turns play.)
  *
  * Each is a genuine full-depth layer turn — the 3 body cubies *and* the
  * matching decorative stickers at that depth all rotate together, exactly
  * like a real cube move — not just the front face's own tiles spinning in
  * place.
  *
- * F, L, R, U, and D each include some of the front face's 9 interactive
- * tiles (F includes all of them; L/R include a column of 3; U/D include a
- * row of 3). Those tiles are real, distinct feature buttons (see
- * CubeFace/CubeTile), not a uniform color like the decorative faces, so
- * every move is a *full* 2π turn — never a quarter turn — landing back
- * exactly on the original grid before the next move starts. S (the middle
- * slice) never touches the front face at all, but uses the same full-turn
- * shape for consistency.
+ * L, R, U, and D each include some of the front face's 9 interactive tiles
+ * (L/R include a column of 3; U/D include a row of 3). Those tiles are
+ * real, distinct feature buttons (see CubeFace/CubeTile), not a uniform
+ * color like the decorative faces, so every move is a *full* 2π turn —
+ * never a quarter turn — landing back exactly on the original grid before
+ * the next move starts.
  */
 export function runSolveFlourish(state: FlourishState, reducedMotion: boolean): gsap.core.Timeline {
   const tl = gsap.timeline({
@@ -105,9 +105,7 @@ export function runSolveFlourish(state: FlourishState, reducedMotion: boolean): 
     tl.set(state, { angle: 0 });
   };
 
-  move("z", STEP, 1, 0); // F
-  move("z", 0, -1, PAUSE); // S
-  move("x", -STEP, 1, PAUSE); // L
+  move("x", -STEP, 1, 0); // L
   move("x", STEP, -1, PAUSE); // R
   move("y", STEP, -1, PAUSE); // U
   move("y", -STEP, 1, PAUSE); // D

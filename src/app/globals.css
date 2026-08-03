@@ -181,105 +181,224 @@ body {
   animation: float-y 6s var(--ease-premium) infinite;
 }
 
-/* "Aurora borealis" hero backdrop — soft blue/cyan ribbons drifting and
-   pulsing over the dark sky, layered with screen blending so they glow
-   additively instead of sitting as flat tinted shapes. Blue-only palette
-   (no green) per brand — reads as aurora motion, not a literal aurora. */
-.aurora-band {
+/* "Aurora borealis" hero backdrop. Real aurora reads as vertical curtains
+   of light — fine striations like hanging fabric, swaying and flickering,
+   brightest in a band near the top and fading toward the horizon — rather
+   than flat diagonal ribbons, so this models that directly: a soft "veil"
+   glow ties the sky together, and several tall, narrow "curtains" (each
+   with its own fine vertical stripe texture) sway/flicker independently on
+   top of it. Screen blending on dark theme makes them glow additively;
+   blue-only palette there (no green) keeps that theme exactly as it was.
+   Light theme (below) swaps to normal blending and a blue-to-teal-green
+   palette closer to a real aurora borealis photo. */
+.aurora-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.aurora-veil {
   position: absolute;
   left: 50%;
-  top: -10%;
-  width: 170%;
-  height: 130%;
+  top: -35%;
+  width: 160%;
+  height: 75%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse 55% 55% at 50% 25%, rgba(56, 189, 248, 0.22), transparent 70%);
   filter: blur(70px);
   mix-blend-mode: screen;
+  animation: aurora-veil-pulse 11s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+.aurora-curtain {
+  position: absolute;
+  top: -25%;
+  height: 165%;
+  width: 24%;
+  filter: blur(16px);
+  mix-blend-mode: screen;
+  transform-origin: top center;
   will-change: transform, opacity;
 }
 
-.aurora-band-1 {
-  background: linear-gradient(
-    100deg,
-    transparent 8%,
-    rgba(84, 169, 212, 0.55) 28%,
-    rgba(34, 211, 238, 0.4) 48%,
-    transparent 72%
+/* Fine vertical striations inside each curtain — the "folded light fabric"
+   texture real aurora curtains show, rather than a flat gradient block. */
+.aurora-curtain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    91deg,
+    rgba(255, 255, 255, 0.12) 0px,
+    transparent 2px,
+    transparent 10px
   );
-  animation: aurora-drift-1 17s ease-in-out infinite;
+  mix-blend-mode: overlay;
+  opacity: 0.55;
 }
 
-.aurora-band-2 {
+.aurora-curtain-1 {
+  left: -6%;
   background: linear-gradient(
-    125deg,
-    transparent 15%,
-    rgba(56, 189, 248, 0.4) 38%,
-    rgba(84, 169, 212, 0.32) 58%,
-    transparent 82%
+    180deg,
+    transparent 0%,
+    rgba(148, 197, 222, 0.28) 18%,
+    rgba(84, 169, 212, 0.5) 38%,
+    rgba(34, 211, 238, 0.3) 62%,
+    transparent 92%
   );
-  animation: aurora-drift-2 21s ease-in-out infinite;
-  animation-delay: -6s;
+  animation: aurora-sway-1 15s ease-in-out infinite, aurora-flicker-1 6.5s ease-in-out infinite;
 }
 
-.aurora-band-3 {
+.aurora-curtain-2 {
+  left: 14%;
+  width: 20%;
   background: linear-gradient(
-    75deg,
-    transparent 18%,
-    rgba(148, 197, 222, 0.35) 42%,
-    rgba(34, 211, 238, 0.28) 62%,
-    transparent 88%
+    180deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.22) 15%,
+    rgba(34, 211, 238, 0.45) 35%,
+    rgba(84, 169, 212, 0.28) 60%,
+    transparent 90%
   );
-  animation: aurora-drift-3 25s ease-in-out infinite;
-  animation-delay: -12s;
+  animation: aurora-sway-2 18s ease-in-out infinite -3s, aurora-flicker-2 7.5s ease-in-out infinite -1.5s;
 }
 
-@keyframes aurora-drift-1 {
-  0%, 100% { transform: translate(-53%, -14%) rotate(-6deg) scaleY(1); opacity: 0.45; }
-  50% { transform: translate(-47%, -20%) rotate(4deg) scaleY(1.18); opacity: 0.75; }
+.aurora-curtain-3 {
+  left: 34%;
+  width: 26%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(84, 169, 212, 0.3) 14%,
+    rgba(56, 189, 248, 0.5) 34%,
+    rgba(148, 197, 222, 0.25) 58%,
+    transparent 90%
+  );
+  animation: aurora-sway-3 20s ease-in-out infinite -6s, aurora-flicker-1 8s ease-in-out infinite -2s;
 }
 
-@keyframes aurora-drift-2 {
-  0%, 100% { transform: translate(-49%, -10%) rotate(9deg) scaleY(1.05); opacity: 0.35; }
-  50% { transform: translate(-55%, -16%) rotate(-4deg) scaleY(0.9); opacity: 0.6; }
+.aurora-curtain-4 {
+  left: 58%;
+  width: 22%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(34, 211, 238, 0.25) 16%,
+    rgba(84, 169, 212, 0.42) 36%,
+    rgba(56, 189, 248, 0.22) 60%,
+    transparent 90%
+  );
+  animation: aurora-sway-2 16s ease-in-out infinite -4s, aurora-flicker-2 6s ease-in-out infinite -3s;
 }
 
-@keyframes aurora-drift-3 {
-  0%, 100% { transform: translate(-48%, -18%) rotate(-3deg); opacity: 0.3; }
-  50% { transform: translate(-52%, -8%) rotate(6deg); opacity: 0.55; }
+.aurora-curtain-5 {
+  left: 78%;
+  width: 24%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(148, 197, 222, 0.24) 18%,
+    rgba(34, 211, 238, 0.4) 40%,
+    rgba(84, 169, 212, 0.22) 64%,
+    transparent 92%
+  );
+  animation: aurora-sway-1 17s ease-in-out infinite -8s, aurora-flicker-1 7s ease-in-out infinite -4s;
+}
+
+@keyframes aurora-veil-pulse {
+  0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.85; transform: translateX(-48%) scale(1.08); }
+}
+
+/* Each curtain sways like hanging fabric — pinned at the top
+   (transform-origin), drifting and stretching more toward the bottom. */
+@keyframes aurora-sway-1 {
+  0%, 100% { transform: translateX(0%) skewX(-4deg) scaleY(1); }
+  50% { transform: translateX(5%) skewX(3deg) scaleY(1.08); }
+}
+
+@keyframes aurora-sway-2 {
+  0%, 100% { transform: translateX(3%) skewX(3deg) scaleY(1.04); }
+  50% { transform: translateX(-4%) skewX(-4deg) scaleY(0.96); }
+}
+
+@keyframes aurora-sway-3 {
+  0%, 100% { transform: translateX(-3%) skewX(-2deg) scaleY(1); }
+  50% { transform: translateX(4%) skewX(4deg) scaleY(1.1); }
+}
+
+@keyframes aurora-flicker-1 {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes aurora-flicker-2 {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.75; }
 }
 
 /* Light-theme variant: `screen` blending washes out to near-white against
-   a bright backdrop, so the ribbons switch to normal blending. Also swaps
+   a bright backdrop, so the curtains switch to normal blending. Also swaps
    in a blue-to-teal-green palette closer to a real aurora borealis photo —
    dark theme keeps its original blue/cyan-only look untouched above. */
-.aurora-light .aurora-band {
+.aurora-light .aurora-veil,
+.aurora-light .aurora-curtain {
   mix-blend-mode: normal;
 }
 
-.aurora-light .aurora-band-1 {
+.aurora-light .aurora-curtain-1 {
   background: linear-gradient(
-    100deg,
-    transparent 8%,
-    rgba(84, 169, 212, 0.55) 26%,
-    rgba(45, 212, 160, 0.4) 48%,
-    transparent 72%
+    180deg,
+    transparent 0%,
+    rgba(148, 197, 222, 0.28) 18%,
+    rgba(84, 169, 212, 0.5) 38%,
+    rgba(45, 212, 160, 0.32) 62%,
+    transparent 92%
   );
 }
 
-.aurora-light .aurora-band-2 {
+.aurora-light .aurora-curtain-2 {
   background: linear-gradient(
-    125deg,
-    transparent 15%,
-    rgba(56, 189, 248, 0.4) 36%,
-    rgba(16, 185, 129, 0.32) 58%,
-    transparent 82%
+    180deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.22) 15%,
+    rgba(16, 185, 129, 0.4) 35%,
+    rgba(84, 169, 212, 0.28) 60%,
+    transparent 90%
   );
 }
 
-.aurora-light .aurora-band-3 {
+.aurora-light .aurora-curtain-3 {
   background: linear-gradient(
-    75deg,
-    transparent 18%,
-    rgba(148, 197, 222, 0.35) 40%,
-    rgba(34, 211, 238, 0.3) 62%,
-    transparent 88%
+    180deg,
+    transparent 0%,
+    rgba(84, 169, 212, 0.3) 14%,
+    rgba(45, 212, 160, 0.48) 34%,
+    rgba(148, 197, 222, 0.25) 58%,
+    transparent 90%
+  );
+}
+
+.aurora-light .aurora-curtain-4 {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(34, 211, 238, 0.25) 16%,
+    rgba(16, 185, 129, 0.38) 36%,
+    rgba(56, 189, 248, 0.22) 60%,
+    transparent 90%
+  );
+}
+
+.aurora-light .aurora-curtain-5 {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(148, 197, 222, 0.24) 18%,
+    rgba(45, 212, 160, 0.36) 40%,
+    rgba(84, 169, 212, 0.22) 64%,
+    transparent 92%
   );
 }

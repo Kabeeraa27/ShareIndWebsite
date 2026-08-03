@@ -5,19 +5,25 @@ interface AuroraProps {
   isLight?: boolean;
 }
 
-/** Drifting blue/cyan light ribbons behind the homepage hero — a CSS-only
- *  "aurora borealis" backdrop layered under the cube. Kept to blue/cyan
- *  tones only (no green) to stay on-brand. Respects reduced-motion via the
- *  global media query in globals.css, which freezes all animations. */
+/** A CSS-only "aurora borealis" backdrop behind the homepage hero — tall,
+ *  narrow, softly-striated "curtains" of light that sway and flicker
+ *  independently over a broad glow, the way a real aurora hangs and
+ *  ripples in the sky, rather than flat drifting ribbons. Kept to
+ *  blue/cyan tones only on dark theme (no green) to stay on-brand.
+ *  Respects reduced-motion via the global media query in globals.css,
+ *  which freezes all animations. */
 export function Aurora({ isLight = false }: AuroraProps) {
   return (
     <div
-      className={`pointer-events-none absolute inset-0 overflow-hidden ${isLight ? "aurora-light" : ""}`}
+      className={`pointer-events-none absolute inset-0 overflow-hidden aurora-scene ${isLight ? "aurora-light" : ""}`}
       aria-hidden="true"
     >
-      <div className="aurora-band aurora-band-1" />
-      <div className="aurora-band aurora-band-2" />
-      <div className="aurora-band aurora-band-3" />
+      <div className="aurora-veil" />
+      <div className="aurora-curtain aurora-curtain-1" />
+      <div className="aurora-curtain aurora-curtain-2" />
+      <div className="aurora-curtain aurora-curtain-3" />
+      <div className="aurora-curtain aurora-curtain-4" />
+      <div className="aurora-curtain aurora-curtain-5" />
     </div>
   );
 }

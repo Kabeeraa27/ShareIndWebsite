@@ -65,38 +65,55 @@ function CubePossibilities() {
         multidimensional solutions.
       </p>
 
-      <div className="mx-auto mt-7 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-3 px-2 sm:gap-x-8">
-        {CUBE_MODULES.map((module, i) => {
-          const isActive = i === active;
-          return (
-            <button
-              key={module.title}
-              type="button"
-              onClick={() => setActive(i)}
-              className="group flex shrink-0 flex-col items-center gap-2"
-            >
-              <span
-                className="text-sm font-bold uppercase tracking-wider transition-all duration-300 sm:text-lg"
-                style={{
-                  color: module.color,
-                  opacity: isActive ? 1 : 0.45,
-                  fontFamily: "var(--font-display)",
-                  textShadow: isActive ? `0 0 18px ${module.color}` : "none",
-                }}
+      {/* Two nested elements on purpose: the outer one owns scrolling
+          (fixed width, overflow-x-auto), the inner one owns centering
+          (w-max + mx-auto). Combining both jobs on a single flex container
+          with justify-center is what caused the old version to clip both
+          the first and last pill — the browser's default scroll position
+          sits at the *center* of a centered-but-overflowing flex line, not
+          its start. Splitting them keeps this row on one line always: it
+          centers when it fits, and scrolls from a real left edge (nothing
+          cut off) when it doesn't. */}
+      <div
+        className="no-scrollbar mx-auto mt-7 w-full max-w-3xl overflow-x-auto px-2"
+        style={{
+          maskImage: "linear-gradient(to right, transparent, black 4%, black 92%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 4%, black 92%, transparent)",
+        }}
+      >
+        <div className="mx-auto flex w-max items-center gap-x-5 whitespace-nowrap sm:gap-x-7">
+          {CUBE_MODULES.map((module, i) => {
+            const isActive = i === active;
+            return (
+              <button
+                key={module.title}
+                type="button"
+                onClick={() => setActive(i)}
+                className="group flex shrink-0 flex-col items-center gap-1.5"
               >
-                {module.title}
-              </span>
-              <span
-                className="h-[3px] rounded-full transition-all duration-300"
-                style={{
-                  width: isActive ? "100%" : "0%",
-                  background: module.color,
-                  boxShadow: isActive ? `0 0 10px ${module.color}` : "none",
-                }}
-              />
-            </button>
-          );
-        })}
+                <span
+                  className="text-xs font-bold uppercase tracking-wide transition-all duration-300 sm:text-base"
+                  style={{
+                    color: module.color,
+                    opacity: isActive ? 1 : 0.45,
+                    fontFamily: "var(--font-display)",
+                    textShadow: isActive ? `0 0 18px ${module.color}` : "none",
+                  }}
+                >
+                  {module.title}
+                </span>
+                <span
+                  className="h-[3px] rounded-full transition-all duration-300"
+                  style={{
+                    width: isActive ? "100%" : "0%",
+                    background: module.color,
+                    boxShadow: isActive ? `0 0 10px ${module.color}` : "none",
+                  }}
+                />
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="relative mx-auto mt-5 min-h-[3.5rem] max-w-xl sm:min-h-[2rem]">
