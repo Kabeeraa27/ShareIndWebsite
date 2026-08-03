@@ -15,7 +15,12 @@ import {
 import { GiConcreteBag } from "react-icons/gi";
 import type { IconType } from "react-icons";
 
-export const REPORT_CATEGORIES = ["Sector Outlook", "Coverage & Trackers", "Notes & Thematics"] as const;
+export const REPORT_CATEGORIES = [
+  "Thematic",
+  "Initiating Coverage",
+  "Management Meet Notes",
+  "Result Update",
+] as const;
 export type ReportCategory = (typeof REPORT_CATEGORIES)[number];
 
 export interface ReportFile {
@@ -45,6 +50,21 @@ export interface ReportSector extends Omit<ReportSectorSeed, "titles"> {
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+/** Reads the category off the title's own wording rather than its position
+ *  in the seed list — the six seed titles per sector were written before
+ *  the category set existed and don't fall in a fixed order, but most
+ *  already name their own type ("... Coverage Initiation", "... Management
+ *  Meet Note", "... Thematic"). Anything without one of those markers is a
+ *  periodic outlook/tracker/preview tied to the results cycle, so it falls
+ *  under Result Update. */
+function categorize(title: string): ReportCategory {
+  const t = title.toLowerCase();
+  if (t.includes("management meet")) return "Management Meet Notes";
+  if (t.includes("coverage initiation")) return "Initiating Coverage";
+  if (t.includes("thematic")) return "Thematic";
+  return "Result Update";
+}
+
 /** Deterministic (no Math.random, so SSR/CSR stay in sync) but varied
  *  dates/page counts, seeded per-sector so each folder's files don't all
  *  look identical. */
@@ -57,7 +77,7 @@ function buildFiles(titles: ReportSectorSeed["titles"], seed: number): ReportFil
       title,
       date: `${day} ${MONTHS[monthIndex]} 2026`,
       pages: 10 + ((seed * 5 + i * 9) % 32),
-      category: REPORT_CATEGORIES[Math.floor(i / 2)],
+      category: categorize(title),
     };
   });
 }

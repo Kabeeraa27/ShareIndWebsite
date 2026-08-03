@@ -241,7 +241,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Scan to download the Share India app"
-                className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1"
+                className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1.5"
               >
                 <Image
                   src="/app-qrcode.jpg"
@@ -251,12 +251,12 @@ export function Footer() {
                   className="h-full w-full object-contain"
                 />
               </a>
-              <div className="flex flex-col justify-between gap-2" style={{ height: "3.5rem" }}>
+              <div className="flex flex-col justify-between" style={{ height: "5rem" }}>
                 <a
                   href="https://play.google.com/store/apps/details?id=com.tradingapp.shareindia&pli=1"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-6 items-center"
+                  className="flex h-8 items-center"
                 >
                   <Image
                     src="/playstore-badge.png"
@@ -270,7 +270,7 @@ export function Footer() {
                   href="https://apps.apple.com/in/app/share-india-demat-stocks-ipo/id1610726788"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-6 items-center"
+                  className="flex h-8 items-center"
                 >
                   <Image
                     src="/appstore-badge.png"
