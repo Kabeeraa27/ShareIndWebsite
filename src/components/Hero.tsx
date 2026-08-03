@@ -231,7 +231,7 @@ export function Hero() {
         </div>
       </motion.div>
 
-      <p className="relative z-10 mx-auto mt-6 max-w-2xl text-center text-sm italic leading-relaxed text-[var(--inst-text-muted)] sm:text-base">
+      <p className="relative z-10 mx-auto mt-6 max-w-2xl text-center text-sm font-semibold italic leading-relaxed text-[var(--inst-heading)] sm:text-base">
         Every face of the cube represents a strength—together forming a complete solution for
         institutional investors.
       </p>
