@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
@@ -39,6 +39,7 @@ const CUBE_MODULES = [
  *  through the cube's four "faces" instead of dumping all four at once. */
 function CubePossibilities() {
   const [active, setActive] = useState(0);
+  const pillRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -46,6 +47,19 @@ function CubePossibilities() {
     }, 3400);
     return () => window.clearInterval(id);
   }, []);
+
+  // Keeps whichever pill is active scrolled to the center of the row —
+  // on desktop the row usually fits with no scrolling needed, but on
+  // narrower screens (where the row scrolls horizontally, see the mask
+  // fade below) the auto-rotating and click-selected pill would otherwise
+  // land off-screen with no visual cue that it changed.
+  useEffect(() => {
+    pillRefs.current[active]?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, [active]);
 
   return (
     <motion.div
@@ -96,6 +110,9 @@ function CubePossibilities() {
             return (
               <button
                 key={module.title}
+                ref={(el) => {
+                  pillRefs.current[i] = el;
+                }}
                 type="button"
                 onClick={() => setActive(i)}
                 className="group shrink-0 rounded-full px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide transition-all duration-300 sm:px-5 sm:py-2 sm:text-base"

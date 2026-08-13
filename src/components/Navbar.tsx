@@ -63,21 +63,15 @@ export function Navbar() {
               className="h-full w-full object-contain"
             />
           </span>
-          {/* Full brand name wraps to two lines on narrow screens, which
-              bloats the fixed navbar's height and lets it collide with
-              content below (see FileCard) — a shorter label below `sm`
-              keeps the bar a single, predictable line on mobile.
-              "Share India" is the registered hallmark, so its two solid
-              colors (blue + red) are fixed rather than run through the
-              site's animated multicolor gradient-text treatment. */}
-          <span className="whitespace-nowrap">
-            <span className="hidden sm:inline">
-              <span style={{ color: "#1b6fb8" }}>Share</span>{" "}
-              <span style={{ color: "#ce2626" }}>India Institutional Desk</span>
-            </span>
-            <span className="sm:hidden">
-              <span style={{ color: "#1b6fb8" }}>Share</span> <span style={{ color: "#ce2626" }}>India</span>
-            </span>
+          {/* Full brand name shows at every width now — small enough and
+              non-wrapping even on a narrow phone (see FileCard's pt-24,
+              sized to clear this bar regardless). "Share India" is the
+              registered hallmark, so its two solid colors (blue + red)
+              are fixed rather than run through the site's animated
+              multicolor gradient-text treatment. */}
+          <span className="whitespace-nowrap text-[11px] sm:text-lg">
+            <span style={{ color: "#1b6fb8" }}>Share</span>{" "}
+            <span style={{ color: "#ce2626" }}>India Institutional Desk</span>
           </span>
         </Link>
 

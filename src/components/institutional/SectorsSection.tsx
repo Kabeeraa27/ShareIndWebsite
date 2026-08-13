@@ -20,7 +20,7 @@ export function SectorsSection() {
           <div className="mx-auto mt-2 h-1 w-16 rounded-full bg-[var(--inst-primary)]" />
         </motion.div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {SECTORS.map((sector, i) => {
             const color = ACCENTS[i % ACCENTS.length];
             return (
@@ -45,7 +45,9 @@ export function SectorsSection() {
                 >
                   <sector.icon size={16} style={{ color }} aria-hidden="true" />
                 </span>
-                <span className="text-sm font-medium text-[var(--inst-text)]">{sector.name}</span>
+                <span className="min-w-0 flex-1 text-sm leading-snug font-medium text-[var(--inst-text)]">
+                  {sector.name}
+                </span>
               </motion.div>
             );
           })}

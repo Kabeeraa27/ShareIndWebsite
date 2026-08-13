@@ -52,7 +52,12 @@ export function FileCard({ index, total, label, color, scrollYProgress, children
       // content with no way to scroll back up to it (the pinned FileStack
       // owns page scroll). Centering is safe again from `sm` up, where the
       // desktop nav is a single line and cards reliably fit.
-      className="pointer-events-none absolute inset-0 flex items-start justify-center overflow-hidden px-4 pt-24 pb-6 sm:items-center sm:px-8 sm:pt-16 sm:pb-10"
+      //
+      // pt-24 clears the fixed Navbar (~68-72px tall) with room for the
+      // folder tab above the card. sm:pt-16 (64px) used to be tighter than
+      // the navbar's own height, so the tab sat partly behind it at normal
+      // desktop zoom — bumped to match.
+      className="pointer-events-none absolute inset-0 flex items-start justify-center overflow-hidden px-4 pt-24 pb-6 sm:items-center sm:px-8 sm:pt-24 sm:pb-10"
       style={{ zIndex: total - index }}
     >
       <motion.div
