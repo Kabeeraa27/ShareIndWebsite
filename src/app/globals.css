@@ -348,28 +348,34 @@ body {
 
 /* Light-theme variant: `screen` blending washes out to near-white against
    a bright backdrop, so the curtains switch to normal blending. Colors
-   swap to a subtle warm cream/tan shimmer — barely-there variations on
-   the page's own cream tones (--inst-bg #fffdeb, --inst-bg-alt #f3e4c9,
-   --inst-card-alt-bg #f8efdb) plus a touch of deeper tan for definition —
-   so the drifting bands read as a soft glow on the cream backdrop instead
-   of a blue tint. Dark theme keeps its original blue/cyan-only look and
-   screen blending untouched above. */
+   swap to the same four bold accents the hero's module pills use — blue
+   #1B6FB8, violet #7C3AED, red #CE2626, teal #0D9488 — at real, visible
+   opacity instead of a barely-there shimmer, so the cube backdrop reads
+   as genuinely colorful and high-contrast (the brief: "attractive like
+   the dark theme, just light theme") rather than flat and dull. Dark
+   theme keeps its original blue/cyan-only look and screen blending
+   untouched above. */
 .aurora-light .aurora-veil,
 .aurora-light .aurora-curtain {
   mix-blend-mode: normal;
 }
 
 .aurora-light .aurora-veil {
-  background: radial-gradient(ellipse 55% 55% at 50% 25%, rgba(243, 228, 201, 0.4), transparent 70%);
+  background: radial-gradient(
+    ellipse 55% 55% at 50% 25%,
+    rgba(27, 111, 184, 0.22),
+    rgba(206, 38, 38, 0.12) 60%,
+    transparent 75%
+  );
 }
 
 .aurora-light .aurora-curtain-1 {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(255, 253, 235, 0.45) 18%,
-    rgba(243, 228, 201, 0.55) 38%,
-    rgba(255, 253, 235, 0.3) 62%,
+    rgba(27, 111, 184, 0.5) 20%,
+    rgba(124, 58, 237, 0.4) 42%,
+    rgba(27, 111, 184, 0.22) 65%,
     transparent 92%
   );
 }
@@ -378,9 +384,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(243, 228, 201, 0.32) 15%,
-    rgba(214, 180, 130, 0.4) 35%,
-    rgba(255, 253, 235, 0.28) 60%,
+    rgba(124, 58, 237, 0.42) 16%,
+    rgba(206, 38, 38, 0.38) 38%,
+    rgba(124, 58, 237, 0.2) 62%,
     transparent 90%
   );
 }
@@ -389,9 +395,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(255, 253, 235, 0.38) 14%,
-    rgba(206, 166, 110, 0.45) 34%,
-    rgba(243, 228, 201, 0.25) 58%,
+    rgba(206, 38, 38, 0.4) 15%,
+    rgba(13, 148, 136, 0.4) 36%,
+    rgba(206, 38, 38, 0.2) 60%,
     transparent 90%
   );
 }
@@ -400,9 +406,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(243, 228, 201, 0.3) 16%,
-    rgba(214, 180, 130, 0.35) 36%,
-    rgba(255, 253, 235, 0.22) 60%,
+    rgba(13, 148, 136, 0.4) 17%,
+    rgba(27, 111, 184, 0.36) 38%,
+    rgba(13, 148, 136, 0.18) 62%,
     transparent 90%
   );
 }
@@ -411,9 +417,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(255, 253, 235, 0.32) 18%,
-    rgba(243, 228, 201, 0.34) 40%,
-    rgba(214, 180, 130, 0.2) 64%,
+    rgba(27, 111, 184, 0.36) 19%,
+    rgba(124, 58, 237, 0.34) 42%,
+    rgba(206, 38, 38, 0.18) 66%,
     transparent 92%
   );
 }

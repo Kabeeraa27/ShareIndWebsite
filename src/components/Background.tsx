@@ -50,17 +50,28 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
     return () => window.removeEventListener("mousemove", onMove);
   }, [mouseX, mouseY]);
 
+  // Only the homepage cube hero passes aurora=true — every other
+  // light-theme banner (About, Team, Reports, Sectors, ...) stays on the
+  // flat cream fill, matching the tab/card backgrounds those pages use.
+  const boldLight = isLight && aurora;
+
   const baseGradient = isLight
-    ? // Flat cream fill — same #f8efdb as --inst-card-alt-bg, the color the
-      // "Serving"/"Presence" tab blocks (and other cards) use — across
-      // every light-theme banner, homepage cube hero included, so nothing
-      // reads as a stray blue wash anymore. The homepage keeps a subtle
-      // warm-toned aurora drifting on top (see .aurora-light in
-      // globals.css); other pages don't render Aurora at all.
-      "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.4), transparent 60%)," +
-      "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.05), transparent 60%)," +
-      "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(10,41,71,0.06), transparent 60%)," +
-      "linear-gradient(180deg, #f8efdb 0%, #f8efdb 100%)"
+    ? aurora
+      ? // High-contrast, colorful base for the cube hero specifically —
+        // real depth from brand-colored glows (blue/red/violet/teal, the
+        // same four accents the module pills use) over a bright white
+        // base, aiming for the same "attractive, not flat" read the dark
+        // theme gets from its own near-black + glow-orb backdrop.
+        "radial-gradient(ellipse 55% 50% at 50% 0%, rgba(255,255,255,0.65), transparent 55%)," +
+        "radial-gradient(ellipse 55% 55% at 8% 15%, rgba(27,111,184,0.32), transparent 62%)," +
+        "radial-gradient(ellipse 55% 55% at 92% 12%, rgba(206,38,38,0.26), transparent 62%)," +
+        "radial-gradient(ellipse 60% 55% at 12% 94%, rgba(124,58,237,0.24), transparent 62%)," +
+        "radial-gradient(ellipse 60% 55% at 90% 96%, rgba(13,148,136,0.22), transparent 62%)," +
+        "linear-gradient(160deg, #f4f8fc 0%, #e8f0fa 45%, #f6eef9 100%)"
+      : "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.4), transparent 60%)," +
+        "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.05), transparent 60%)," +
+        "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(10,41,71,0.06), transparent 60%)," +
+        "linear-gradient(180deg, #f8efdb 0%, #f8efdb 100%)"
     : "radial-gradient(ellipse 80% 60% at 20% 15%, rgba(84,169,212,0.20), transparent 60%)," +
       "radial-gradient(ellipse 70% 60% at 85% 20%, rgba(239,68,68,0.16), transparent 60%)," +
       "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(84,169,212,0.12), transparent 60%)," +
@@ -74,7 +85,7 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
   return (
     <div
       className={`pointer-events-none absolute inset-0 -z-10 overflow-hidden ${
-        isLight ? "bg-[#f8efdb]" : "bg-background"
+        isLight ? (aurora ? "bg-[#eef3fa]" : "bg-[#f8efdb]") : "bg-background"
       }`}
     >
       {/* Base gradient mesh */}
@@ -88,13 +99,13 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
       <motion.div
         style={{ x: layer1X, y: layer1Y }}
         className={`absolute left-[8%] top-[18%] h-72 w-72 rounded-full blur-[110px] animate-float transition-opacity duration-700 ${
-          isLight ? "bg-[#1b6fb8]/10" : "bg-accent-blue/30"
+          isLight ? (boldLight ? "bg-[#1b6fb8]/25" : "bg-[#1b6fb8]/10") : "bg-accent-blue/30"
         }`}
       />
       <motion.div
         style={{ x: layer2X, y: layer2Y }}
         className={`absolute right-[10%] top-[8%] h-96 w-96 rounded-full blur-[130px] animate-float ${
-          isLight ? "bg-[#ce2626]/10" : "bg-accent-purple/25"
+          isLight ? (boldLight ? "bg-[#7c3aed]/20" : "bg-[#ce2626]/10") : "bg-accent-purple/25"
         }`}
       />
       <motion.div
@@ -102,8 +113,10 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
         className={`absolute bottom-[6%] left-[35%] h-80 w-80 rounded-full blur-[120px] animate-float transition-colors duration-700 ${
           isLight
             ? accentGlow
-              ? "bg-[#ce2626]/15"
-              : "bg-[#1b6fb8]/8"
+              ? "bg-[#ce2626]/22"
+              : boldLight
+                ? "bg-[#0d9488]/22"
+                : "bg-[#1b6fb8]/8"
             : accentGlow
               ? "bg-accent-pink/30"
               : "bg-accent-cyan/20"
@@ -114,25 +127,25 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
       <motion.div
         style={{ x: layer2X, y: layer1Y }}
         className={`absolute left-[15%] top-[65%] h-16 w-16 rotate-12 rounded-xl border animate-float ${
-          isLight ? "border-[#1b6fb8]/20" : "border-accent-cyan/25"
+          isLight ? (boldLight ? "border-[#0d9488]/40" : "border-[#1b6fb8]/20") : "border-accent-cyan/25"
         }`}
       />
       <motion.div
         style={{ x: layer1X, y: layer3Y }}
         className={`absolute right-[18%] top-[55%] h-10 w-10 rotate-45 rounded-md border animate-float ${
-          isLight ? "border-[#ce2626]/25" : "border-accent-purple/30"
+          isLight ? (boldLight ? "border-[#7c3aed]/45" : "border-[#ce2626]/25") : "border-accent-purple/30"
         }`}
       />
       <motion.div
         style={{ x: layer3X, y: layer2Y }}
         className={`absolute right-[28%] top-[12%] h-6 w-6 rounded-full border animate-float ${
-          isLight ? "border-[#1b6fb8]/30" : "border-accent-blue/40"
+          isLight ? (boldLight ? "border-[#1b6fb8]/50" : "border-[#1b6fb8]/30") : "border-accent-blue/40"
         }`}
       />
       <motion.div
         style={{ x: layer2X, y: layer2Y }}
         className={`absolute left-[45%] top-[8%] h-8 w-8 rotate-6 rounded-full border animate-float ${
-          isLight ? "border-[#ce2626]/20" : "border-accent-pink/25"
+          isLight ? (boldLight ? "border-[#ce2626]/40" : "border-[#ce2626]/20") : "border-accent-pink/25"
         }`}
       />
 
