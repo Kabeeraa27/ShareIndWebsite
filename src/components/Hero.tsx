@@ -15,22 +15,22 @@ const CUBE_MODULES = [
   {
     title: "Execution Edge",
     description: "Seamless trading across NSE, BSE, and MCX with technology-driven speed.",
-    color: "var(--color-accent-blue)",
+    color: "#1b6fb8",
   },
   {
     title: "Research Depth",
     description: "Unlocking opportunities in mid & small caps with sharp fundamental and technical insights.",
-    color: "var(--color-accent-purple)",
+    color: "#7c3aed",
   },
   {
     title: "Corporate Access",
     description: "Connecting investors and corporates through roadshows and strategic interactions.",
-    color: "var(--color-accent-pink)",
+    color: "#ce2626",
   },
   {
     title: "Innovation Core",
     description: "Powered by uTrade & Algowire for algo-driven, low-latency trading.",
-    color: "var(--color-accent-cyan)",
+    color: "#0d9488",
   },
 ];
 
@@ -60,7 +60,7 @@ function CubePossibilities() {
       >
         The Cube of Possibilities
       </p>
-      <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-relaxed text-[var(--inst-text)] sm:text-lg">
+      <p className="mx-auto mt-3 max-w-2xl text-sm font-semibold leading-relaxed text-[var(--inst-heading)] sm:text-lg">
         Like a Rubik&apos;s Cube, our institutional business is built on precision, agility, and
         multidimensional solutions.
       </p>
@@ -68,14 +68,23 @@ function CubePossibilities() {
       {/* Two nested elements on purpose: the outer one owns scrolling
           (fixed width, overflow-x-auto), the inner one owns centering
           (w-max + mx-auto). Combining both jobs on a single flex container
-          with justify-center is what caused the old version to clip both
+          with justify-center is what caused an earlier version to clip both
           the first and last pill — the browser's default scroll position
           sits at the *center* of a centered-but-overflowing flex line, not
           its start. Splitting them keeps this row on one line always: it
           centers when it fits, and scrolls from a real left edge (nothing
-          cut off) when it doesn't. */}
+          cut off) when it doesn't.
+
+          The outer element also breaks out of this block's own max-w-3xl
+          via the left-1/2/-translate-x-1/2 pair — at the pills' bolder,
+          badge-sized width, 768px wasn't enough room to fit all four
+          without scrolling even on a normal desktop viewport, so
+          "Innovation Core" was permanently clipped on load, not just on
+          narrow phones. Breaking out to (near) full viewport width fixes
+          that for any reasonably sized screen; the scroll+fade fallback
+          still catches genuinely narrow ones. */}
       <div
-        className="no-scrollbar mx-auto mt-7 w-full max-w-3xl overflow-x-auto px-2"
+        className="no-scrollbar relative left-1/2 mt-7 w-screen max-w-none -translate-x-1/2 overflow-x-auto px-4 sm:px-6"
         style={{
           maskImage: "linear-gradient(to right, transparent, black 4%, black 92%, transparent)",
           WebkitMaskImage: "linear-gradient(to right, transparent, black 4%, black 92%, transparent)",
@@ -114,7 +123,7 @@ function CubePossibilities() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-x-0 top-0 text-sm font-medium leading-snug text-[var(--inst-text)] sm:text-base"
+            className="absolute inset-x-0 top-0 text-sm font-semibold leading-snug text-[var(--inst-heading)] sm:text-base"
           >
             {CUBE_MODULES[active].description}
           </motion.p>
