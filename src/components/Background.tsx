@@ -19,9 +19,10 @@ interface BackgroundProps {
 /**
  * Full-viewport ambient backdrop behind the cube and every other hero
  * banner (Team, Reports). Dark theme keeps the site's original black/glass
- * look; light theme drops the black chrome entirely in favor of the
- * cream/blue/red institutional palette, so the cube doesn't sit in a stray
- * dark box once the rest of the page has gone light.
+ * look; light theme drops the black chrome entirely in favor of the blue-
+ * shades institutional palette (the same family --inst-bg and friends use
+ * site-wide), so the cube doesn't sit in a stray dark box once the rest of
+ * the page has gone light.
  */
 export function Background({ accentGlow = false, aurora = false }: BackgroundProps) {
   const { theme } = useTheme();
@@ -51,8 +52,10 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
   }, [mouseX, mouseY]);
 
   // Only the homepage cube hero passes aurora=true — every other
-  // light-theme banner (About, Team, Reports, Sectors, ...) stays on the
-  // flat cream fill, matching the tab/card backgrounds those pages use.
+  // light-theme banner (About, Team, Reports, Sectors, ...) gets a calmer,
+  // flatter version of the same blue-shades palette (matching the
+  // --inst-bg tokens those pages' own sections use) rather than the
+  // vivid, high-contrast one reserved for the hero.
   const boldLight = isLight && aurora;
 
   const baseGradient = isLight
@@ -72,10 +75,10 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
         "radial-gradient(ellipse 60% 55% at 12% 94%, rgba(0,180,216,0.36), transparent 65%)," +
         "radial-gradient(ellipse 60% 55% at 90% 96%, rgba(72,202,228,0.36), transparent 65%)," +
         "linear-gradient(160deg, #ffffff 0%, #f0f9fc 45%, #e6f6fb 100%)"
-      : "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.4), transparent 60%)," +
-        "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.05), transparent 60%)," +
-        "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(10,41,71,0.06), transparent 60%)," +
-        "linear-gradient(180deg, #f8efdb 0%, #f8efdb 100%)"
+      : "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.45), transparent 60%)," +
+        "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(0,119,182,0.07), transparent 60%)," +
+        "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(2,62,138,0.07), transparent 60%)," +
+        "linear-gradient(180deg, #f3fafd 0%, #f3fafd 100%)"
     : "radial-gradient(ellipse 80% 60% at 20% 15%, rgba(84,169,212,0.20), transparent 60%)," +
       "radial-gradient(ellipse 70% 60% at 85% 20%, rgba(239,68,68,0.16), transparent 60%)," +
       "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(84,169,212,0.12), transparent 60%)," +
@@ -89,7 +92,7 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
   return (
     <div
       className={`pointer-events-none absolute inset-0 -z-10 overflow-hidden ${
-        isLight ? (aurora ? "bg-white" : "bg-[#f8efdb]") : "bg-background"
+        isLight ? (aurora ? "bg-white" : "bg-[#f3fafd]") : "bg-background"
       }`}
     >
       {/* Base gradient mesh */}
