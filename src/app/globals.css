@@ -363,8 +363,8 @@ body {
 .aurora-light .aurora-veil {
   background: radial-gradient(
     ellipse 55% 55% at 50% 25%,
-    rgba(27, 111, 184, 0.22),
-    rgba(206, 38, 38, 0.12) 60%,
+    rgba(27, 111, 184, 0.32),
+    rgba(206, 38, 38, 0.2) 60%,
     transparent 75%
   );
 }
@@ -373,9 +373,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(27, 111, 184, 0.5) 20%,
-    rgba(124, 58, 237, 0.4) 42%,
-    rgba(27, 111, 184, 0.22) 65%,
+    rgba(27, 111, 184, 0.65) 20%,
+    rgba(124, 58, 237, 0.55) 42%,
+    rgba(27, 111, 184, 0.32) 65%,
     transparent 92%
   );
 }
@@ -384,9 +384,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(124, 58, 237, 0.42) 16%,
-    rgba(206, 38, 38, 0.38) 38%,
-    rgba(124, 58, 237, 0.2) 62%,
+    rgba(124, 58, 237, 0.58) 16%,
+    rgba(206, 38, 38, 0.52) 38%,
+    rgba(124, 58, 237, 0.3) 62%,
     transparent 90%
   );
 }
@@ -395,9 +395,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(206, 38, 38, 0.4) 15%,
-    rgba(13, 148, 136, 0.4) 36%,
-    rgba(206, 38, 38, 0.2) 60%,
+    rgba(206, 38, 38, 0.55) 15%,
+    rgba(13, 148, 136, 0.55) 36%,
+    rgba(206, 38, 38, 0.3) 60%,
     transparent 90%
   );
 }
@@ -406,9 +406,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(13, 148, 136, 0.4) 17%,
-    rgba(27, 111, 184, 0.36) 38%,
-    rgba(13, 148, 136, 0.18) 62%,
+    rgba(13, 148, 136, 0.55) 17%,
+    rgba(27, 111, 184, 0.5) 38%,
+    rgba(13, 148, 136, 0.28) 62%,
     transparent 90%
   );
 }
@@ -417,9 +417,9 @@ body {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(27, 111, 184, 0.36) 19%,
-    rgba(124, 58, 237, 0.34) 42%,
-    rgba(206, 38, 38, 0.18) 66%,
+    rgba(27, 111, 184, 0.5) 19%,
+    rgba(124, 58, 237, 0.48) 42%,
+    rgba(206, 38, 38, 0.28) 66%,
     transparent 92%
   );
 }

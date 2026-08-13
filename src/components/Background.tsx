@@ -61,13 +61,16 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
         // real depth from brand-colored glows (blue/red/violet/teal, the
         // same four accents the module pills use) over a bright white
         // base, aiming for the same "attractive, not flat" read the dark
-        // theme gets from its own near-black + glow-orb backdrop.
-        "radial-gradient(ellipse 55% 50% at 50% 0%, rgba(255,255,255,0.65), transparent 55%)," +
-        "radial-gradient(ellipse 55% 55% at 8% 15%, rgba(27,111,184,0.32), transparent 62%)," +
-        "radial-gradient(ellipse 55% 55% at 92% 12%, rgba(206,38,38,0.26), transparent 62%)," +
-        "radial-gradient(ellipse 60% 55% at 12% 94%, rgba(124,58,237,0.24), transparent 62%)," +
-        "radial-gradient(ellipse 60% 55% at 90% 96%, rgba(13,148,136,0.22), transparent 62%)," +
-        "linear-gradient(160deg, #f4f8fc 0%, #e8f0fa 45%, #f6eef9 100%)"
+        // theme gets from its own near-black + glow-orb backdrop. Base is
+        // pushed to pure white and the glows to higher opacity than a
+        // first pass, so the color bands read as bright and vivid rather
+        // than pastel.
+        "radial-gradient(ellipse 55% 50% at 50% 0%, rgba(255,255,255,0.8), transparent 50%)," +
+        "radial-gradient(ellipse 55% 55% at 8% 15%, rgba(27,111,184,0.45), transparent 65%)," +
+        "radial-gradient(ellipse 55% 55% at 92% 12%, rgba(206,38,38,0.38), transparent 65%)," +
+        "radial-gradient(ellipse 60% 55% at 12% 94%, rgba(124,58,237,0.36), transparent 65%)," +
+        "radial-gradient(ellipse 60% 55% at 90% 96%, rgba(13,148,136,0.34), transparent 65%)," +
+        "linear-gradient(160deg, #ffffff 0%, #f0f6ff 45%, #fdf0fb 100%)"
       : "radial-gradient(ellipse 70% 60% at 15% 10%, rgba(255,255,255,0.4), transparent 60%)," +
         "radial-gradient(ellipse 70% 60% at 90% 15%, rgba(206,38,38,0.05), transparent 60%)," +
         "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(10,41,71,0.06), transparent 60%)," +
@@ -85,7 +88,7 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
   return (
     <div
       className={`pointer-events-none absolute inset-0 -z-10 overflow-hidden ${
-        isLight ? (aurora ? "bg-[#eef3fa]" : "bg-[#f8efdb]") : "bg-background"
+        isLight ? (aurora ? "bg-white" : "bg-[#f8efdb]") : "bg-background"
       }`}
     >
       {/* Base gradient mesh */}
@@ -99,13 +102,13 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
       <motion.div
         style={{ x: layer1X, y: layer1Y }}
         className={`absolute left-[8%] top-[18%] h-72 w-72 rounded-full blur-[110px] animate-float transition-opacity duration-700 ${
-          isLight ? (boldLight ? "bg-[#1b6fb8]/25" : "bg-[#1b6fb8]/10") : "bg-accent-blue/30"
+          isLight ? (boldLight ? "bg-[#1b6fb8]/40" : "bg-[#1b6fb8]/10") : "bg-accent-blue/30"
         }`}
       />
       <motion.div
         style={{ x: layer2X, y: layer2Y }}
         className={`absolute right-[10%] top-[8%] h-96 w-96 rounded-full blur-[130px] animate-float ${
-          isLight ? (boldLight ? "bg-[#7c3aed]/20" : "bg-[#ce2626]/10") : "bg-accent-purple/25"
+          isLight ? (boldLight ? "bg-[#7c3aed]/35" : "bg-[#ce2626]/10") : "bg-accent-purple/25"
         }`}
       />
       <motion.div
@@ -113,9 +116,9 @@ export function Background({ accentGlow = false, aurora = false }: BackgroundPro
         className={`absolute bottom-[6%] left-[35%] h-80 w-80 rounded-full blur-[120px] animate-float transition-colors duration-700 ${
           isLight
             ? accentGlow
-              ? "bg-[#ce2626]/22"
+              ? "bg-[#ce2626]/32"
               : boldLight
-                ? "bg-[#0d9488]/22"
+                ? "bg-[#0d9488]/38"
                 : "bg-[#1b6fb8]/8"
             : accentGlow
               ? "bg-accent-pink/30"
