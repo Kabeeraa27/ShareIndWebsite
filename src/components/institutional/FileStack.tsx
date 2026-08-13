@@ -3,6 +3,7 @@
 import { useRef, type ComponentType } from "react";
 import { useScroll } from "framer-motion";
 import { FileCard } from "./FileCard";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface FileDef {
   label: string;
@@ -22,10 +23,20 @@ export function FileStack({ files }: { files: FileDef[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const total = files.length;
+  const { theme } = useTheme();
 
   return (
     <div ref={ref} className="relative" style={{ height: `${total * 100}dvh` }}>
-      <div className="sticky top-0 h-dvh w-full overflow-hidden bg-[var(--inst-bg)]">
+      {/* The backdrop behind/around the pinned file card itself — not the
+       *  card's own surface (FileCard keeps its plain --inst-bg pane
+       *  unchanged). Light theme gets a modern gradient-mesh + dot-grid
+       *  treatment instead of a flat cream fill, closer in spirit to how
+       *  much is visually happening in the dark theme's own backdrop. */}
+      <div
+        className={`sticky top-0 h-dvh w-full overflow-hidden ${
+          theme === "light" ? "home-filestack-backdrop" : "bg-[var(--inst-bg)]"
+        }`}
+      >
         {files.map(({ label, color, Section }, i) => (
           <FileCard key={label} index={i} total={total} label={label} color={color} scrollYProgress={scrollYProgress}>
             <Section />
