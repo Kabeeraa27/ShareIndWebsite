@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { InstitutionalThemeScope } from "@/components/InstitutionalThemeScope";
 import { FeaturePageContent } from "@/components/features/FeaturePageContent";
 import { features } from "@/data/features";
@@ -39,7 +38,6 @@ export default async function FeaturePage({ params }: { params: Promise<{ id: st
           <FeaturePageContent featureId={feature.id} />
         </InstitutionalThemeScope>
       </main>
-      <Footer />
     </div>
   );
 }

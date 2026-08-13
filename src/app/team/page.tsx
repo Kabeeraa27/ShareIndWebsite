@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { InstitutionalThemeScope } from "@/components/InstitutionalThemeScope";
 import { LeadershipSection } from "@/components/institutional/LeadershipSection";
 import { TeamHero } from "@/components/team/TeamHero";
@@ -22,7 +21,6 @@ export default function TeamPage() {
           <TeamGrid />
         </InstitutionalThemeScope>
       </main>
-      <Footer />
     </div>
   );
 }

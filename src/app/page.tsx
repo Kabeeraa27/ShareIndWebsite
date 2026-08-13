@@ -8,7 +8,6 @@ import { LeadershipSection } from "@/components/institutional/LeadershipSection"
 import { OfferingsSection } from "@/components/institutional/OfferingsSection";
 import { SectorsSection } from "@/components/institutional/SectorsSection";
 import { InstitutionalContactSection } from "@/components/institutional/InstitutionalContactSection";
-import { Footer } from "@/components/Footer";
 
 const BLUE = "#1b6fb8";
 const RED = "#ce2626";
@@ -33,7 +32,6 @@ export default function Home() {
           <FileStack files={FILES} />
         </InstitutionalThemeScope>
       </main>
-      <Footer />
     </div>
   );
 }

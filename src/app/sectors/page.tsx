@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { InstitutionalThemeScope } from "@/components/InstitutionalThemeScope";
 import { SectionPageHero } from "@/components/institutional/SectionPageHero";
 import { SectorsSection } from "@/components/institutional/SectorsSection";
@@ -25,7 +24,6 @@ export default function SectorsPage() {
           <SectorsSection />
         </InstitutionalThemeScope>
       </main>
-      <Footer />
     </div>
   );
 }

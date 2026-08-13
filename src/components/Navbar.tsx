@@ -66,10 +66,18 @@ export function Navbar() {
           {/* Full brand name wraps to two lines on narrow screens, which
               bloats the fixed navbar's height and lets it collide with
               content below (see FileCard) — a shorter label below `sm`
-              keeps the bar a single, predictable line on mobile. */}
-          <span className="gradient-text whitespace-nowrap">
-            <span className="hidden sm:inline">Share India Institutional Desk</span>
-            <span className="sm:hidden">Share India</span>
+              keeps the bar a single, predictable line on mobile.
+              "Share India" is the registered hallmark, so its two solid
+              colors (blue + red) are fixed rather than run through the
+              site's animated multicolor gradient-text treatment. */}
+          <span className="whitespace-nowrap">
+            <span className="hidden sm:inline">
+              <span style={{ color: "#1b6fb8" }}>Share</span>{" "}
+              <span style={{ color: "#ce2626" }}>India Institutional Desk</span>
+            </span>
+            <span className="sm:hidden">
+              <span style={{ color: "#1b6fb8" }}>Share</span> <span style={{ color: "#ce2626" }}>India</span>
+            </span>
           </span>
         </Link>
 
@@ -91,7 +99,7 @@ export function Navbar() {
         <div className="hidden items-center gap-2 xl:flex">
           <ThemeToggle theme={theme} onToggle={toggleTheme} onLight={onLight} />
           <SiteMenu onLight={onLight} />
-          <MagneticButton href="/#get-started">Get Started</MagneticButton>
+          <MagneticButton href="/reports">Reports</MagneticButton>
         </div>
 
         <div className="flex items-center gap-2 xl:hidden">
@@ -131,12 +139,13 @@ export function Navbar() {
               </li>
             ))}
             <li className="mt-2 px-2">
-              <a
-                href="/#get-started"
+              <Link
+                href="/reports"
+                onClick={() => setMobileOpen(false)}
                 className="block rounded-full bg-gradient-to-r from-accent-blue to-accent-purple py-2 text-center text-sm font-medium"
               >
-                Get Started
-              </a>
+                Reports
+              </Link>
             </li>
           </ul>
         </motion.div>
@@ -146,8 +155,8 @@ export function Navbar() {
 }
 
 /** Toggles the institutional sections between the new light redesign and
- *  the site's original dark theme. Doesn't affect the cube, Navbar, or
- *  Footer — those stay as-is regardless of the choice. */
+ *  the site's original dark theme. Doesn't affect the cube or Navbar —
+ *  those stay as-is regardless of the choice. */
 function ThemeToggle({
   theme,
   onToggle,

@@ -81,7 +81,7 @@ function CubePossibilities() {
           WebkitMaskImage: "linear-gradient(to right, transparent, black 4%, black 92%, transparent)",
         }}
       >
-        <div className="mx-auto flex w-max items-center gap-x-5 whitespace-nowrap sm:gap-x-7">
+        <div className="mx-auto flex w-max items-center gap-x-3 whitespace-nowrap sm:gap-x-4">
           {CUBE_MODULES.map((module, i) => {
             const isActive = i === active;
             return (
@@ -89,27 +89,17 @@ function CubePossibilities() {
                 key={module.title}
                 type="button"
                 onClick={() => setActive(i)}
-                className="group flex shrink-0 flex-col items-center gap-1.5"
+                className="group shrink-0 rounded-full px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide transition-all duration-300 sm:px-5 sm:py-2 sm:text-base"
+                style={{
+                  color: isActive ? "#fff" : module.color,
+                  background: isActive ? module.color : `color-mix(in srgb, ${module.color} 18%, transparent)`,
+                  border: `1.5px solid ${module.color}`,
+                  fontFamily: "var(--font-display)",
+                  textShadow: isActive ? "0 1px 3px rgba(0,0,0,0.35)" : "none",
+                  boxShadow: isActive ? `0 0 16px ${module.color}` : "none",
+                }}
               >
-                <span
-                  className="text-xs font-bold uppercase tracking-wide transition-all duration-300 sm:text-base"
-                  style={{
-                    color: module.color,
-                    opacity: isActive ? 1 : 0.45,
-                    fontFamily: "var(--font-display)",
-                    textShadow: isActive ? `0 0 18px ${module.color}` : "none",
-                  }}
-                >
-                  {module.title}
-                </span>
-                <span
-                  className="h-[3px] rounded-full transition-all duration-300"
-                  style={{
-                    width: isActive ? "100%" : "0%",
-                    background: module.color,
-                    boxShadow: isActive ? `0 0 10px ${module.color}` : "none",
-                  }}
-                />
+                {module.title}
               </button>
             );
           })}

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { InstitutionalThemeScope } from "@/components/InstitutionalThemeScope";
 import { ReportsHero } from "@/components/reports/ReportsHero";
 import { ReportsDashboard } from "@/components/reports/ReportsDashboard";
@@ -21,7 +20,6 @@ export default function ReportsPage() {
           <ReportsDashboard />
         </InstitutionalThemeScope>
       </main>
-      <Footer />
     </div>
   );
 }
