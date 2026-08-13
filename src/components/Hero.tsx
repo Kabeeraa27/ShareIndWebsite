@@ -40,6 +40,7 @@ const CUBE_MODULES = [
 function CubePossibilities() {
   const [active, setActive] = useState(0);
   const pillRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const scrollerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -48,17 +49,25 @@ function CubePossibilities() {
     return () => window.clearInterval(id);
   }, []);
 
-  // Keeps whichever pill is active scrolled to the center of the row —
-  // on desktop the row usually fits with no scrolling needed, but on
-  // narrower screens (where the row scrolls horizontally, see the mask
-  // fade below) the auto-rotating and click-selected pill would otherwise
-  // land off-screen with no visual cue that it changed.
+  // Keeps whichever pill is active scrolled to the center of the row — on
+  // desktop the row usually fits with no scrolling needed, but on narrower
+  // screens (where the row scrolls horizontally, see the mask fade below)
+  // the auto-rotating and click-selected pill would otherwise land
+  // off-screen with no visual cue that it changed.
+  //
+  // This sets scrollLeft on the row's own scroll container directly rather
+  // than calling the pill's Element.scrollIntoView() — scrollIntoView walks
+  // every scrollable ancestor up to the document to bring the target fully
+  // into view, and on mobile that included the *page* itself, making the
+  // whole hero visibly jump/scroll every 3.4s as the ticker auto-advanced.
+  // Touching only this container's scrollLeft can't affect page scroll at
+  // all.
   useEffect(() => {
-    pillRefs.current[active]?.scrollIntoView({
-      behavior: "smooth",
-      inline: "center",
-      block: "nearest",
-    });
+    const scroller = scrollerRef.current;
+    const pill = pillRefs.current[active];
+    if (!scroller || !pill) return;
+    const target = pill.offsetLeft - scroller.clientWidth / 2 + pill.offsetWidth / 2;
+    scroller.scrollTo({ left: target, behavior: "smooth" });
   }, [active]);
 
   return (
@@ -98,6 +107,7 @@ function CubePossibilities() {
           that for any reasonably sized screen; the scroll+fade fallback
           still catches genuinely narrow ones. */}
       <div
+        ref={scrollerRef}
         className="no-scrollbar relative left-1/2 mt-7 w-screen max-w-none -translate-x-1/2 overflow-x-auto px-4 sm:px-6"
         style={{
           maskImage: "linear-gradient(to right, transparent, black 4%, black 92%, transparent)",
