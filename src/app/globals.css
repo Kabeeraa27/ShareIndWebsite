@@ -427,12 +427,12 @@ body {
 }
 
 /* Homepage FileStack backdrop, light theme only — sits behind/around the
-   pinned file card, not the card's own surface (FileCard keeps its plain
-   --inst-bg pane, untouched). Was a flat cream fill (var(--inst-bg)); this
-   swaps in a cool white/blue-grey gradient mesh with soft brand-colored
-   glow blobs and a fine dot grid, echoing the kind of depth the dark theme
-   already gets from its own gradient + glow-orb backdrop, so light theme
-   doesn't read as a flat, dull field by comparison. */
+   pinned file card (see .home-filecard-surface below for the card's own
+   surface). Same blue-shades family as the cube hero's backdrop —
+   French Blue #023E8A, Turquoise Surf #00B4D8 — instead of the earlier
+   blue+red mix, so scrolling from the cube into the file stack reads as
+   one continuous palette rather than a handoff between two different
+   color schemes. */
 .home-filestack-backdrop {
   /* No position override here — this class is applied alongside Tailwind's
      `sticky` utility on the same element, and `position: sticky` already
@@ -445,10 +445,10 @@ body {
      scroll past where the (no-longer-sticky) element ends in the page's
      normal flow. */
   background:
-    radial-gradient(ellipse 60% 50% at 12% 8%, rgba(27, 111, 184, 0.12), transparent 60%),
-    radial-gradient(ellipse 55% 50% at 92% 12%, rgba(206, 38, 38, 0.09), transparent 60%),
-    radial-gradient(ellipse 65% 55% at 50% 100%, rgba(27, 111, 184, 0.08), transparent 65%),
-    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    radial-gradient(ellipse 60% 50% at 12% 8%, rgba(2, 62, 138, 0.14), transparent 60%),
+    radial-gradient(ellipse 55% 50% at 92% 12%, rgba(0, 180, 216, 0.12), transparent 60%),
+    radial-gradient(ellipse 65% 55% at 50% 100%, rgba(0, 119, 182, 0.1), transparent 65%),
+    linear-gradient(180deg, #f7fbfd 0%, #eaf5fa 100%);
 }
 
 .home-filestack-backdrop::before {
@@ -458,4 +458,27 @@ body {
   background-image: radial-gradient(circle, rgba(10, 41, 71, 0.07) 1px, transparent 1px);
   background-size: 26px 26px;
   pointer-events: none;
+}
+
+/* The file card's own reading surface, light theme only. Its actual
+   visible color doesn't come from the pane's own background (the section
+   component rendered inside — WhoWeAreSection, DifferentiatorsSection,
+   etc. — paints its own opaque bg-[var(--inst-bg)] / bg-[var(--inst-bg-alt)]
+   over the full pane, on top of whatever the pane itself is set to). So
+   instead of fighting that, this re-scopes the --inst-bg/--inst-bg-alt/
+   --inst-card-alt-bg custom properties themselves for everything inside
+   the homepage file card — same pattern [data-theme] already uses for
+   the light/dark switch, just one level more specific. Every section's
+   own bg-[var(--inst-bg)] class then automatically resolves to this pale
+   blue-tinted set instead of the site-wide cream, with zero changes to
+   the section components themselves, and no effect on those same
+   components' standalone pages (About, Differentiators, ...), which
+   render outside this scope and keep the normal cream tokens.
+   --inst-card-bg (real white "cards" within a section, e.g. leadership
+   tiles) is deliberately left alone — a crisp white card still needs to
+   pop against this backdrop the same way it does against cream. */
+[data-theme="light"] .home-filecard-surface {
+  --inst-bg: #f3fafd;
+  --inst-bg-alt: #e6f4fa;
+  --inst-card-alt-bg: #eaf6fb;
 }

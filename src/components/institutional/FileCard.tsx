@@ -76,7 +76,7 @@ export function FileCard({ index, total, label, color, scrollYProgress, children
             the page scroll that drives the pinned stack, instead of getting
             trapped inside the card with no way to advance. */}
         <div
-          className="overflow-y-auto rounded-b-2xl rounded-tr-2xl border shadow-[0_25px_60px_-20px_rgba(10,41,71,0.35)]"
+          className="home-filecard-surface overflow-y-auto rounded-b-2xl rounded-tr-2xl border shadow-[0_25px_60px_-20px_rgba(10,41,71,0.35)]"
           style={{ borderColor: `${color}33`, background: "var(--inst-bg)" }}
         >
           {children}
